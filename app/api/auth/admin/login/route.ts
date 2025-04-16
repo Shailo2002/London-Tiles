@@ -5,28 +5,22 @@ import jwt from 'jsonwebtoken';
 
 export async function POST(req: NextRequest) {
   try {
-    
     const body = await req.json();
+    const { email, password } = body;
 
-    if (!body.email || !body.password) {
+    if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
     const admin = await prisma.admin.findUnique({
-      where: {
-        email: body.email,
-      },
+      where: { email },
     });
 
     if (!admin) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
-    
-    
-    const isPasswordValid = await bcrypt.compare(body.password, admin.password);
-     
-    console.log("dbpassword", admin.password);
-    console.log("inputpassword", body.password);
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
@@ -36,30 +30,34 @@ export async function POST(req: NextRequest) {
     }
 
     const token = jwt.sign(
-      { 
+      {
         id: admin.id,
         email: admin.email,
-        role: 'admin'
-      }, 
+        role: 'admin',
+      },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    return NextResponse.json(
-      { 
-        token,
+    // Set HttpOnly cookie
+    const response = NextResponse.json(
+      {
         user: {
           email: admin.email,
-          role: 'admin'
-        }
+          role: 'admin',
+        },
       },
-      { 
-        status: 200,
-        headers: {
-          'Set-Cookie': `token=${token}; Path=/; HttpOnly; SameSite=Strict`
-        }
-      }
+      { status: 200 }
     );
+
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'strict',
+      maxAge: 60 * 60, // 1 hour
+    });
+
+    return response;
   } catch (error) {
     console.error('Admin login error:', error);
     return NextResponse.json(

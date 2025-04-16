@@ -2,20 +2,29 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("/api/auth/admin/login", { email, password });
+      const res = await axios.post("/api/auth/admin/login", {
+        email,
+        password,
+      });
       const { token } = res.data;
-      localStorage.setItem("admin-token", token);
+
+      // Set token in cookie
+      document.cookie = `admin-token=${token}; path=/`;
+
       alert("Login successful!");
+      router.push("/admin/dashboard");
     } catch (err: any) {
       alert(err.response?.data?.error || "Login failed");
     } finally {
@@ -60,4 +69,3 @@ export default function AdminLogin() {
     </main>
   );
 }
-
