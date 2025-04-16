@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String // Hashed password
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Products {
+  id              String   @id @default(uuid())
+  name            String
+  image           String
+  description     String
+  productCategory String
+  Height          String[]
+  Length          String[]
+  Thickness       String[]
+  Finish          String[]
+  Rebate          String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  subtotal  Float // e.g., £31.35
+  shipping  String? // "Calculate shipping" or numeric value
+  vat       Float // e.g., £6.27
+  total     Float // e.g., £37.62
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  order     Order  @relation(fields: [orderId], references: [id])
+  orderId   String
+  quantity  Int // e.g., 4
+  price     Float // Price per unit at purchase time (e.g., £6.27)
+  height    String // Selected attribute (e.g., "70mm")
+  length    String // Selected attribute (e.g., "3040mm")
+  thickness String // Selected attribute (e.g., "18mm")
+  finish    String // Selected attribute (e.g., "Unprimed")
+  rebate    String // Selected attribute (e.g., "No Rebate")
+}

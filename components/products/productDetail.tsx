@@ -3,6 +3,7 @@ import { useState } from "react";
 
 const ProductDetail = () => {
   const [selectedOptions, setSelectedOptions] = useState({
+    height: "",
     length: "",
     thickness: "",
     finish: "",
@@ -12,18 +13,24 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
 
   // Options data
-  const lengthOptions = [
-    "3040mm",
-    "125mm",
-    "250mm",
-    "270mm",
-    "300mm",
-    "350mm",
-    "400mm",
-  ];
-  const thicknessOptions = ["18mm", "95mm", "100mm"];
+    const heightOptions = [
+  "70mm", 
+  "95mm", 
+  "120mm", 
+  "140mm", 
+  "170mm", 
+  "195mm", 
+  "220mm", 
+  "250mm", 
+  "270mm", 
+  "300mm", 
+  "350mm", 
+  "400mm"
+];
+  const lengthOptions = ["3040mm", "4200"];
+  const thicknessOptions = ["15mm", "18mm", "25mm"];
   const finishOptions = ["Unprimed", "Primed"];
-  const rebateOptions = ["No Rebate", "140mm", "125mm"];
+  const rebateOptions = ["No Rebate", "pipe rebate"];
 
   // Discount data
   const quantityDiscounts = [
@@ -33,6 +40,7 @@ const ProductDetail = () => {
   ];
 
   return (
+    <div>
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb Navigation */}
       <nav className="mb-6 text-sm text-gray-600">
@@ -57,10 +65,26 @@ const ProductDetail = () => {
           </h1>
 
           {/* Product Specifications */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b pb-2">
-              <span className="font-medium">Height</span>
-              <span className="text-gray-600">70mm</span>
+          {/* Height */}
+          <div className="flex justify-between items-center border-b pb-2">
+              <span className="font-medium">Length</span>
+              <select
+                className="select select-bordered w-48"
+                value={selectedOptions.height}
+                onChange={(e) =>
+                  setSelectedOptions({
+                    ...selectedOptions,
+                    height: e.target.value,
+                  })
+                }
+              >
+                <option value="">Choose Height</option>
+                {heightOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Length Selector */}
