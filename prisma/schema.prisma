@@ -27,7 +27,7 @@ model Admin {
 model Products {
   id              String   @id @default(uuid())
   name            String
-  image           String
+  image           String[]
   description     String
   productCategory String
   Height          String[]
