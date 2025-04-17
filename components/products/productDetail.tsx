@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useCart } from "@/lib/context/CartContext";
+import { toast } from "react-hot-toast";
 
 type ProductDetailProps = {
   product: {
@@ -20,6 +22,7 @@ type ProductDetailProps = {
 };
 
 const ProductDetail = ({ product }: ProductDetailProps) => {
+  const { addItem } = useCart();
   const [selectedOptions, setSelectedOptions] = useState({
     height: "",
     length: "",
@@ -44,6 +47,36 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     { quantity: "25 - 49", discount: "3%", price: "£7.30 inc VAT" },
     { quantity: "50 +", discount: "5%", price: "£7.13 inc VAT" },
   ];
+
+  const handleAddToBasket = () => {
+    // Check if all required options are selected
+    const requiredOptions = [
+      "height",
+      "length",
+      "thickness",
+      "finish",
+      "rebate",
+    ];
+    const missingOptions = requiredOptions.filter(
+      (option) => !selectedOptions[option as keyof typeof selectedOptions]
+    );
+
+    if (missingOptions.length > 0) {
+      toast.error(`Please select ${missingOptions.join(", ")}`);
+      return;
+    }
+
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.priceIncVAT,
+      quantity: quantity,
+      image: product.image[0],
+      options: selectedOptions,
+    });
+
+    toast.success("Added to basket!");
+  };
 
   return (
     <div>
@@ -255,7 +288,10 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                     +
                   </button>
                 </div>
-                <button className="btn btn-primary flex-1">
+                <button
+                  className="btn btn-primary flex-1"
+                  onClick={handleAddToBasket}
+                >
                   Add to Basket
                 </button>
               </div>
