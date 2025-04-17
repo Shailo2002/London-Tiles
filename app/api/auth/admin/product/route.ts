@@ -3,6 +3,18 @@ import cloudinary from '@/lib/cloudinary';
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { getProducts } from '@/lib/product';
+
+
+export async function GET() {
+  try {
+    const products = await getProducts();
+    return NextResponse.json({ products });
+  } catch (error) {
+    console.error("API error:", error);
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {

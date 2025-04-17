@@ -1,5 +1,25 @@
 import { prisma } from '@/lib/prisma';
+import { getProductById } from '@/lib/product';
 import { NextRequest, NextResponse } from 'next/server';
+
+
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const product = await getProductById(params.id);
+    
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+    
+    return NextResponse.json({ product });
+  } catch (error) {
+    console.error("API error:", error);
+    return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
+  }
+}
 
 export async function DELETE(req: NextRequest, { params }: any) {
   try {

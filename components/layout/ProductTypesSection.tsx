@@ -11,18 +11,6 @@ const products = [
       "https://res.cloudinary.com/dfapgsapr/image/upload/v1744870165/london-tiles/products/giic0pgtmhlec1cvffz3.jpg",
     link: "/product-category/architrave",
   },
-  {
-    name: "Window Boards",
-    image:
-      "https://res.cloudinary.com/dfapgsapr/image/upload/v1744870165/london-tiles/products/giic0pgtmhlec1cvffz3.jpg",
-    link: "/product-category/window-boards",
-  },
-  {
-    name: "Plinth Blocks & Rosettes",
-    image:
-      "https://res.cloudinary.com/dfapgsapr/image/upload/v1744870165/london-tiles/products/giic0pgtmhlec1cvffz3.jpg",
-    link: "/product-category/plinth-blocks",
-  },
 ];
 
 export default function ProductTypesSection() {
