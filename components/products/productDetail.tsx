@@ -1,7 +1,25 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 
-const ProductDetail = () => {
+type ProductDetailProps = {
+  product: {
+    id: string;
+    name: string;
+    image: string[];
+    description: string;
+    productCategory: string;
+    Height: string[];
+    Length: string[];
+    Thickness: string[];
+    Finish: string[];
+    Rebate: string[];
+    priceIncVAT: number;
+    priceExVAT: number;
+  };
+};
+
+const ProductDetail = ({ product }: ProductDetailProps) => {
   const [selectedOptions, setSelectedOptions] = useState({
     height: "",
     length: "",
@@ -11,26 +29,14 @@ const ProductDetail = () => {
   });
 
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Options data
-    const heightOptions = [
-  "70mm", 
-  "95mm", 
-  "120mm", 
-  "140mm", 
-  "170mm", 
-  "195mm", 
-  "220mm", 
-  "250mm", 
-  "270mm", 
-  "300mm", 
-  "350mm", 
-  "400mm"
-];
-  const lengthOptions = ["3040mm", "4200"];
-  const thicknessOptions = ["15mm", "18mm", "25mm"];
-  const finishOptions = ["Unprimed", "Primed"];
-  const rebateOptions = ["No Rebate", "pipe rebate"];
+  // Options data from product
+  const heightOptions = product.Height || [];
+  const lengthOptions = product.Length || [];
+  const thicknessOptions = product.Thickness || [];
+  const finishOptions = product.Finish || [];
+  const rebateOptions = product.Rebate || [];
 
   // Discount data
   const quantityDiscounts = [
@@ -41,33 +47,72 @@ const ProductDetail = () => {
 
   return (
     <div>
-    <div className="container mx-auto px-4 py-8">
-      {/* Breadcrumb Navigation */}
-      <nav className="mb-6 text-sm text-gray-600">
-        <ol className="flex space-x-2">
-          <li>Home</li>
-          <li>&gt;</li>
-          <li>Skirting Board</li>
-          <li>&gt;</li>
-          <li>MDF Skirting Board</li>
-          <li>&gt;</li>
-          <li className="font-semibold text-gray-900">
-            High Stepped MDF Skirting Board
-          </li>
-        </ol>
-      </nav>
+      <div className="container mx-auto px-4 py-8">
+        {/* Breadcrumb Navigation */}
+        <nav className="mb-6 text-sm text-gray-600">
+          <ol className="flex space-x-2">
+            <li>Home</li>
+            <li>&gt;</li>
+            <li>
+              {product.productCategory.charAt(0).toUpperCase() +
+                product.productCategory.slice(1)}
+            </li>
+            <li>&gt;</li>
+            <li className="font-semibold text-gray-900">{product.name}</li>
+          </ol>
+        </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column - Product Options */}
-        <div className="space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            High Stepped MDF Skirting Board
-          </h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - Product Image */}
+          <div className="space-y-4">
+            <div className="relative h-96 w-full bg-gray-100 rounded-lg overflow-hidden">
+              <Image
+                src={
+                  product.image[selectedImageIndex] ||
+                  "/upload/skirting_small.jpg"
+                }
+                alt={product.name}
+                layout="fill"
+                objectFit="contain"
+                className="rounded-lg"
+              />
+            </div>
 
-          {/* Product Specifications */}
-          {/* Height */}
-          <div className="flex justify-between items-center border-b pb-2">
-              <span className="font-medium">Length</span>
+            {/* Thumbnail Gallery */}
+            {product.image.length > 1 && (
+              <div className="flex space-x-2 overflow-x-auto">
+                {product.image.map((img, index) => (
+                  <div
+                    key={index}
+                    className={`relative h-20 w-20 flex-shrink-0 cursor-pointer border-2 rounded-md overflow-hidden ${
+                      selectedImageIndex === index
+                        ? "border-blue-500"
+                        : "border-transparent"
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} - view ${index + 1}`}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Product Options */}
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              {product.name}
+            </h1>
+
+            {/* Product Specifications */}
+            {/* Height */}
+            <div className="flex justify-between items-center border-b pb-2">
+              <span className="font-medium">Height</span>
               <select
                 className="select select-bordered w-48"
                 value={selectedOptions.height}
@@ -179,9 +224,11 @@ const ProductDetail = () => {
             <div className="bg-gray-50 p-4 rounded-lg mt-6">
               <div className="flex flex-col mb-4">
                 <span className="text-2xl font-bold text-blue-600">
-                  £7.52 (inc VAT)
+                  £{product.priceIncVAT.toFixed(2)} (inc VAT)
                 </span>
-                <span className="text-lg text-gray-600">£6.27 (ex VAT)</span>
+                <span className="text-lg text-gray-600">
+                  £{product.priceExVAT.toFixed(2)} (ex VAT)
+                </span>
               </div>
 
               <div className="flex items-center gap-4">
@@ -215,14 +262,18 @@ const ProductDetail = () => {
             </div>
 
             {/* SKU Display */}
-            <div className="mt-4 text-sm text-gray-500">
-              SKU: SXU-SKBO-A39-MDF-70-3040-LB-U-N
-            </div>
+            <div className="mt-4 text-sm text-gray-500">SKU: {product.id}</div>
           </div>
         </div>
 
-        {/* Right Column - Discounts */}
-        <div className="space-y-6">
+        {/* Product Description */}
+        <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4">Product Description</h3>
+          <p className="text-gray-600">{product.description}</p>
+        </div>
+
+        {/* Discounts Section */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Quantity Discount Table */}
           <div className="card bg-white shadow-sm">
             <div className="card-body">
@@ -273,16 +324,6 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Recommendations Section */}
-      <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">We Recommend</h3>
-        <p className="text-gray-600">
-          Ideal for post prime sanding, the sanding sponge can help to create
-          the desired finish between coats. Moulds perfectly into profiles with
-          the right grit to create a smooth finish.
-        </p>
       </div>
     </div>
   );
