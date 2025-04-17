@@ -1,14 +1,15 @@
-import Link from "next/link";
+import HeroSection from "@/components/layout/HeroSection";
+import Navbar from "@/components/layout/Navbar";
+import ProductTypesSection from "@/components/layout/ProductTypesSection";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div>
-      <div>Landing Page</div>
-      <div>
-        <Link href="/product-category/skirting">
-          <button className="bg-blue-700">Skirting</button>
-        </Link>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <HeroSection />
+        <ProductTypesSection />
+      </main>
+    </>
   );
 }

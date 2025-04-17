@@ -14,7 +14,10 @@ export default function AdminDashboard() {
     Thickness: "",
     Finish: "",
     Rebate: "",
+    priceIncVAT: "",
+    priceExVAT: "",
   });
+
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -45,12 +48,13 @@ export default function AdminDashboard() {
     formData.append("Thickness", JSON.stringify(form.Thickness.split(",")));
     formData.append("Finish", JSON.stringify(form.Finish.split(",")));
     formData.append("Rebate", JSON.stringify(form.Rebate.split(",")));
+    formData.append("priceIncVAT", form.priceIncVAT);
+    formData.append("priceExVAT", form.priceExVAT);
 
     images.forEach((img) => {
       formData.append("image", img);
     });
 
-   
     try {
       const res = await axios.post("/api/auth/admin/product", formData, {
         headers: {
@@ -59,9 +63,13 @@ export default function AdminDashboard() {
       });
       alert("Product added!");
       setIsOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.log("error", err);
-      alert("Error adding product");
+      if (err.response?.status === 409) {
+        alert("Product with this name already exists!");
+      } else {
+        alert("Error adding product");
+      }
     } finally {
       setLoading(false);
     }
@@ -157,6 +165,27 @@ export default function AdminDashboard() {
               value={form.Rebate}
               onChange={handleChange}
               className="w-full border px-3 py-2 rounded"
+            />
+            <input
+              type="number"
+              step="0.01"
+              name="priceIncVAT"
+              placeholder="Price (inc VAT)"
+              value={form.priceIncVAT}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+
+            <input
+              type="number"
+              step="0.01"
+              name="priceExVAT"
+              placeholder="Price (ex VAT)"
+              value={form.priceExVAT}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded"
+              required
             />
 
             <input
