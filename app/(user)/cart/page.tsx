@@ -3,9 +3,11 @@
 import { useCart } from "@/lib/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, total } = useCart();
+  const router = useRouter();
 
   if (items.length === 0) {
     return (
@@ -105,7 +107,10 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-            <button className="btn btn-primary w-full">
+            <button
+              className="btn btn-primary w-full"
+              onClick={() => router.push("/checkout")}
+            >
               Proceed to Payment
             </button>
           </div>

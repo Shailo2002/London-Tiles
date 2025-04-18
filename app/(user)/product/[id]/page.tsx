@@ -8,17 +8,11 @@ export const metadata = {
   description: "View detailed information about our products",
 };
 
-// Make this a server component to fetch data
-export default async function ProductPage({
-  params,
-}: {
-  params: { id: string };
+export default async function ProductPage(props: {
+  params: Promise<{ id: string }>;
 }) {
-  // Get the product ID from the URL
-  const productId = (await params).id;
-
-  // Fetch the product data
-  const productData = await getProductById(productId);
+  const { id } = await props.params;
+  const productData = await getProductById(id);
 
   return <ProductDetail product={productData} />;
 }
@@ -26,9 +20,7 @@ export default async function ProductPage({
 async function getProductById(productId: string) {
   try {
     const product = await prisma.products.findUnique({
-      where: {
-        id: productId,
-      },
+      where: { id: productId },
     });
 
     if (!product) {
@@ -38,6 +30,6 @@ async function getProductById(productId: string) {
     return product;
   } catch (error) {
     console.error("Failed to fetch product:", error);
-    throw error; // Re-throw to be handled by the error boundary
+    throw error;
   }
 }
