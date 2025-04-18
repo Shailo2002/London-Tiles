@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "@/lib/context/CartContext";
-import { useRouter } from "next/navigation";
+
 
 interface AddressFormData {
   firstName: string;
@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     email: "",
   });
 
-  const router = useRouter();
+  
 
   const handleProceedToPayment = async () => {
     try {

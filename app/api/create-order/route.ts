@@ -2,6 +2,25 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import paypal from '@paypal/checkout-server-sdk';
 
+// Define types
+type CartItem = {
+  quantity: number;
+  price: number;
+  options?: {
+    height?: string;
+    length?: string;
+    thickness?: string;
+    finish?: string;
+    rebate?: string;
+  };
+};
+
+type PayPalLink = {
+  href: string;
+  rel: string;
+  method: string;
+};
+
 const environment = new paypal.core.SandboxEnvironment(
   process.env.PAYPAL_CLIENT_ID!,
   process.env.PAYPAL_CLIENT_SECRET!
@@ -44,7 +63,7 @@ export async function POST(req: Request) {
         billingAddressId: billingAddressRecord.id,
         shippingAddressId: shippingAddressRecord.id,
         items: {
-          create: items.map((item: any) => ({
+          create: items.map((item: CartItem) => ({
             quantity: item.quantity,
             price: item.price,
             height: item.options?.height,
@@ -57,7 +76,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // 🔁 Create PayPal Order
+    // Create PayPal Order
     const request = new paypal.orders.OrdersCreateRequest();
     request.prefer("return=representation");
     request.requestBody({
@@ -67,7 +86,7 @@ export async function POST(req: Request) {
           currency_code: "GBP",
           value: total.toFixed(2),
         },
-        custom_id: order.id, // so you can use it later in webhook
+        custom_id: order.id,
       }],
       application_context: {
         return_url: `http://localhost:3000/payment-success?orderId=${order.id}`,
@@ -77,7 +96,7 @@ export async function POST(req: Request) {
 
     const paypalOrder = await client.execute(request);
     
-    // Update the order with PayPal's order ID
+    // Update order with PayPal ID
     await prisma.order.update({
       where: { id: order.id },
       data: { 
@@ -85,14 +104,26 @@ export async function POST(req: Request) {
       }
     });
 
+    // Type-safe link finding
+    const approvalLink = paypalOrder.result.links.find(
+      (link: PayPalLink) => link.rel === "approve"
+    );
+
+    if (!approvalLink) {
+      throw new Error("No approval link found in PayPal response");
+    }
+
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      paypalUrl: paypalOrder.result.links.find((link: any) => link.rel === "approve").href,
+      paypalUrl: approvalLink.href,
     });
 
   } catch (error) {
     console.error("Error in create-order route:", error);
-    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create order' }, 
+      { status: 500 }
+    );
   }
 }
