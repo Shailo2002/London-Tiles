@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,16 +56,17 @@ export default function AdminDashboard() {
     });
 
     try {
-      const res = await axios.post("/api/auth/admin/product", formData, {
+      await axios.post("/api/auth/admin/product", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       alert("Product added!");
       setIsOpen(false);
-    } catch (err: any) {
-      console.log("error", err);
-      if (err.response?.status === 409) {
+    } catch (err) {
+      const error = err as AxiosError;
+      console.log("error", error);
+      if (error.response?.status === 409) {
         alert("Product with this name already exists!");
       } else {
         alert("Error adding product");

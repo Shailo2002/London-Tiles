@@ -1,6 +1,19 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+interface OrderItem {
+  quantity: number;
+  price: number;
+  options: {
+    height: string;
+    length: string;
+    thickness: string;
+    finish: string;
+    rebate: string;
+  };
+}
+
+
 export async function POST(req: Request) {
   try {
     const {
@@ -38,6 +51,7 @@ export async function POST(req: Request) {
     }
 
     // Create order with user association
+    
     const order = await prisma.order.create({
       data: {
         userId: user.id, // Now we associate the order with the user
@@ -49,16 +63,17 @@ export async function POST(req: Request) {
         billingAddressId: billingAddressRecord.id,
         shippingAddressId: shippingAddressRecord.id,
         items: {
-          create: items.map((item: any) => ({
-            quantity: item.quantity,
-            price: item.price,
-            height: item.height,
-            length: item.length,
-            thickness: item.thickness,
-            finish: item.finish,
-            rebate: item.rebate,
-          })),
-        },
+  create: items.map((item: OrderItem) => ({
+    quantity: item.quantity,
+    price: item.price,
+    height: item.options?.height,
+    length: item.options?.length,
+    thickness: item.options?.thickness,
+    finish: item.options?.finish,
+    rebate: item.options?.rebate,
+  })),
+},
+
       },
     });
 

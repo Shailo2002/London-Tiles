@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
@@ -25,8 +25,9 @@ export default function AdminLogin() {
 
       alert("Login successful!");
       router.push("/admin/dashboard");
-    } catch (err: any) {
-      alert(err.response?.data?.error || "Login failed");
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+      alert(error.response?.data?.error || "Login failed");
     } finally {
       setLoading(false);
     }

@@ -1,17 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/context/CartContext";
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  height: number;
-  length: number;
-}
+
 
 interface AddressFormData {
   firstName: string;
@@ -27,7 +19,6 @@ interface AddressFormData {
 }
 
 export default function CheckoutPage() {
-  const router = useRouter();
   const { items, total, subtotal, vat } = useCart();
   const [differentShippingAddress, setDifferentShippingAddress] =
     useState(false);

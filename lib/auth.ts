@@ -28,6 +28,7 @@ export async function verifyAuth(token: string) {
 
     return decoded
   } catch (error) {
+    console.error('Auth error:', error);
     throw new Error('Invalid token')
   }
 }

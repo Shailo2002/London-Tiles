@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, product: newProduct });
   } catch (error) {
+    console.error('API error:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
