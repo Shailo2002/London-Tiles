@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "@/lib/context/CartContext";
-
-
+import { useRouter } from "next/navigation";
 
 interface AddressFormData {
   firstName: string;
@@ -43,9 +42,10 @@ export default function CheckoutPage() {
     email: "",
   });
 
+  const router = useRouter();
+
   const handleProceedToPayment = async () => {
     try {
-      // Create order in the database
       const response = await fetch("/api/create-order", {
         method: "POST",
         headers: {
@@ -60,14 +60,15 @@ export default function CheckoutPage() {
           subtotal,
           vat,
           total,
-          shipping: "Free", // You can modify this based on your shipping logic
+          shipping: "Free",
         }),
       });
 
       const data = await response.json();
+      console.log("data", data);
 
       if (data.success) {
-        // Redirect to PayPal payment
+        // ⏩ Redirect to PayPal
         window.location.href = data.paypalUrl;
       }
     } catch (error) {
@@ -87,8 +88,8 @@ export default function CheckoutPage() {
                 <div>
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-600">
-                    Quantity: {item.quantity} | Height: {item.options.height}mm |
-                    Length: {item.options.length}mm
+                    Quantity: {item.quantity} | Height: {item.options.height}mm
+                    | Length: {item.options.length}mm
                   </p>
                 </div>
                 <p className="font-medium">

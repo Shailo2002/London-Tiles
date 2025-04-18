@@ -1,18 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import paypal from '@paypal/checkout-server-sdk';
 
-interface OrderItem {
-  quantity: number;
-  price: number;
-  options: {
-    height: string;
-    length: string;
-    thickness: string;
-    finish: string;
-    rebate: string;
-  };
-}
-
+const environment = new paypal.core.SandboxEnvironment(
+  process.env.PAYPAL_CLIENT_ID!,
+  process.env.PAYPAL_CLIENT_SECRET!
+);
+const client = new paypal.core.PayPalHttpClient(environment);
 
 export async function POST(req: Request) {
   try {
@@ -26,35 +20,22 @@ export async function POST(req: Request) {
       shipping
     } = await req.json();
 
-    // First, create or get user using billing address email
     const user = await prisma.user.upsert({
-      where: { 
-        email: billingAddress.email 
-      },
-      update: {}, // No updates if user exists
-      create: {
-        email: billingAddress.email,
-      },
+      where: { email: billingAddress.email },
+      update: {},
+      create: { email: billingAddress.email },
     });
 
-    // Create billing address
-    const billingAddressRecord = await prisma.address.create({
-      data: billingAddress,
-    });
+    const billingAddressRecord = await prisma.address.create({ data: billingAddress });
 
-    // Create shipping address if different
     let shippingAddressRecord = billingAddressRecord;
-    if (shippingAddress !== billingAddress) {
-      shippingAddressRecord = await prisma.address.create({
-        data: shippingAddress,
-      });
+    if (JSON.stringify(billingAddress) !== JSON.stringify(shippingAddress)) {
+      shippingAddressRecord = await prisma.address.create({ data: shippingAddress });
     }
 
-    // Create order with user association
-    
     const order = await prisma.order.create({
       data: {
-        userId: user.id, // Now we associate the order with the user
+        userId: user.id,
         status: 'pending',
         subtotal,
         shipping,
@@ -63,35 +44,55 @@ export async function POST(req: Request) {
         billingAddressId: billingAddressRecord.id,
         shippingAddressId: shippingAddressRecord.id,
         items: {
-  create: items.map((item: OrderItem) => ({
-    quantity: item.quantity,
-    price: item.price,
-    height: item.options?.height,
-    length: item.options?.length,
-    thickness: item.options?.thickness,
-    finish: item.options?.finish,
-    rebate: item.options?.rebate,
-  })),
-},
-
+          create: items.map((item: any) => ({
+            quantity: item.quantity,
+            price: item.price,
+            height: item.options?.height,
+            length: item.options?.length,
+            thickness: item.options?.thickness,
+            finish: item.options?.finish,
+            rebate: item.options?.rebate,
+          })),
+        },
       },
     });
 
-    // Initialize PayPal payment
-    // Replace with your PayPal integration code
-    const paypalUrl = `https://www.sandbox.paypal.com/checkoutnow?token=${order.id}`;
+    // 🔁 Create PayPal Order
+    const request = new paypal.orders.OrdersCreateRequest();
+    request.prefer("return=representation");
+    request.requestBody({
+      intent: 'CAPTURE',
+      purchase_units: [{
+        amount: {
+          currency_code: "GBP",
+          value: total.toFixed(2),
+        },
+        custom_id: order.id, // so you can use it later in webhook
+      }],
+      application_context: {
+        return_url: `http://localhost:3000/payment-success?orderId=${order.id}`,
+        cancel_url: `http://localhost:3000/payment-cancelled`,
+      },
+    });
+
+    const paypalOrder = await client.execute(request);
+    
+    // Update the order with PayPal's order ID
+    await prisma.order.update({
+      where: { id: order.id },
+      data: { 
+        paypalOrderId: paypalOrder.result.id 
+      }
+    });
 
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      paypalUrl,
+      paypalUrl: paypalOrder.result.links.find((link: any) => link.rel === "approve").href,
     });
 
   } catch (error) {
-    console.error('Error creating order:', error);
-    return NextResponse.json(
-      { error: 'Failed to create order' },
-      { status: 500 }
-    );
+    console.error("Error in create-order route:", error);
+    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
   }
 }

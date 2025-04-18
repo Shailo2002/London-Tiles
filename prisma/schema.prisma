@@ -43,6 +43,7 @@ model Products {
 
 model Order {
   id                String      @id @default(uuid())
+  paypalOrderId     String?     @unique
   status            String
   subtotal          Float // e.g., £59.16
   shipping          String? // e.g., "Free" or £5.00
