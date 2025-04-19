@@ -10,9 +10,22 @@ export default function Navbar() {
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const [loggedIn, setLoggedIn] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = () => {
@@ -22,21 +35,27 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 px-6 py-4 bg-black/40 backdrop-blur-md text-white flex justify-between items-center">
-      {/* Left: Contact Info */}
-      <div className="text-sm hidden md:flex space-x-6">
-        <span>📧 info@londontiles.co.uk</span>
-        <span>📞 +44 (0)333 700 4400</span>
-      </div>
-
+    <header
+      className={`fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300 ${
+        scrolled ? "bg-white text-black shadow-md" : "bg-transparent text-white"
+      } flex justify-between items-center`}
+    >
       {/* Center: Logo */}
-      <Link href="/" className="text-lg font-semibold tracking-widest">
-        London Tiles
+      <Link href="/" className="text-lg font-light tracking-widest uppercase">
+        LONDON TILES
       </Link>
 
-      {/* Right: Icons */}
-      <div className="flex items-center gap-4">
-        <Search className="w-5 h-5 cursor-pointer" />
+      {/* Right: Navigation Links */}
+      <nav className="hidden md:flex items-center gap-8">
+        <Search className="w-4 h-4 cursor-pointer" />
+
+        <Link
+          href="/product"
+          className="text-sm font-light uppercase tracking-wider hover:underline"
+        >
+          Products
+        </Link>
+
         <Link href="/cart" className="relative">
           <ShoppingCart className="w-5 h-5 cursor-pointer" />
           {itemCount > 0 && (
@@ -47,25 +66,46 @@ export default function Navbar() {
         </Link>
 
         {loggedIn ? (
-          <div className="relative group">
-            <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center cursor-pointer">
+          <div className="relative">
+            <div
+              className={`w-8 h-8 rounded-full ${
+                scrolled ? "bg-black text-white" : "bg-white text-black"
+              } flex items-center justify-center cursor-pointer`}
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              onMouseEnter={() => setDropdownOpen(true)}
+            >
               U
             </div>
-            <div className="absolute right-0 mt-2 w-24 bg-white text-black rounded-md shadow-md hidden group-hover:block">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 hover:bg-gray-200"
+            {dropdownOpen && (
+              <div
+                className="absolute right-0 mt-2 w-32 bg-white text-black rounded-md shadow-md"
+                onMouseLeave={() => setDropdownOpen(false)}
               >
-                Logout
-              </button>
-            </div>
+                <Link
+                  href="/dashboard"
+                  className="block px-4 py-2 hover:bg-gray-200"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         ) : (
-          <Link href="/login" className="text-sm underline cursor-pointer">
-            Sign In/Register
+          <Link
+            href="/login"
+            className="text-sm font-light uppercase tracking-wider hover:underline"
+          >
+            Login
           </Link>
         )}
-      </div>
+      </nav>
     </header>
   );
 }

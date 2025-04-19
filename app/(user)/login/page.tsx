@@ -41,7 +41,7 @@ export default function LoginPage() {
 
     if (result?.ok) {
       localStorage.setItem("isLoggedIn", "true");
-      window.location.href = "/dashboard";
+      window.location.href = `/dashboard?email=${email}`;
     } else {
       setError("Invalid OTP or email");
     }
