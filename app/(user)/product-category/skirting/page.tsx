@@ -2,6 +2,7 @@
 
 import ProductCard from "@/components/products/productCard";
 import { PrismaClient } from "@prisma/client";
+import Image from "next/image";
 
 const prisma = new PrismaClient();
 
@@ -35,30 +36,53 @@ export default async function SkirtingPage() {
   const products = await getSkirtingProducts();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Skirting Boards</h1>
-      <p className="text-gray-600 mb-8">
-        Browse our selection of high-quality MDF skirting boards in various
-        styles and sizes.
-      </p>
+    <div className="w-full min-h-screen">
+      {/* Hero Section */}
+      <div className="relative h-[40vh] min-h-[400px] w-full">
+        <Image
+          src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745089911/skirting-king-home_se2guz.jpg"
+          alt="Skirting Boards"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-12">
+          <div className="container mx-auto">
+            <h1 className="text-4xl md:text-5xl font-light mb-4 text-white">
+              Skirting Boards
+            </h1>
+            <p className="text-lg text-white/80 max-w-2xl">
+              Browse our selection of high-quality MDF skirting boards in
+              various styles and sizes. Each piece is crafted with precision and
+              attention to detail.
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.length > 0 ? (
-          products.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              image={product.image}
-              priceIncVAT={product.priceIncVAT}
-              priceExVAT={product.priceExVAT}
-            />
-          ))
-        ) : (
-          <p className="col-span-full text-center py-10 text-gray-500">
-            No skirting products found.
-          </p>
-        )}
+      {/* Products Section */}
+      <div className="container mx-auto px-6 md:px-12 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                image={product.image}
+                priceIncVAT={product.priceIncVAT}
+                priceExVAT={product.priceExVAT}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <p className="text-gray-500 text-lg">
+                No skirting products found.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

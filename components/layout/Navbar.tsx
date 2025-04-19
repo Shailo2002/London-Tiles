@@ -4,14 +4,18 @@ import { ShoppingCart, Search } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { items } = useCart();
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const pathname = usePathname();
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
@@ -37,7 +41,11 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300 ${
-        scrolled ? "bg-white text-black shadow-md" : "bg-transparent text-white"
+        isHomePage
+          ? scrolled
+            ? "bg-white text-black shadow-md"
+            : "bg-transparent text-white"
+          : "bg-white text-black border-b border-gray-100"
       } flex justify-between items-center`}
     >
       {/* Center: Logo */}
@@ -59,7 +67,13 @@ export default function Navbar() {
         <Link href="/cart" className="relative">
           <ShoppingCart className="w-5 h-5 cursor-pointer" />
           {itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 text-xs bg-white text-black rounded-full px-1">
+            <span
+              className={`absolute -top-2 -right-2 text-xs ${
+                isHomePage && !scrolled
+                  ? "bg-white text-black"
+                  : "bg-black text-white"
+              } rounded-full px-1`}
+            >
               {itemCount}
             </span>
           )}
@@ -69,7 +83,9 @@ export default function Navbar() {
           <div className="relative">
             <div
               className={`w-8 h-8 rounded-full ${
-                scrolled ? "bg-black text-white" : "bg-white text-black"
+                isHomePage && !scrolled
+                  ? "bg-white text-black"
+                  : "bg-black text-white"
               } flex items-center justify-center cursor-pointer`}
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onMouseEnter={() => setDropdownOpen(true)}

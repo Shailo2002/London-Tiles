@@ -18,32 +18,35 @@ const ProductCard = ({
   priceExVAT,
 }: ProductCardProps) => {
   return (
-    <div className="max-w-sm bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div className="relative h-48 w-full">
+    <div className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-lg">
+      <div className="relative h-64 w-full overflow-hidden">
         <Image
           src={image[0] || "/upload/skirting_small.jpg"}
           alt={name}
           layout="fill"
           objectFit="cover"
-          className="rounded-t-lg"
+          className="transition-transform duration-500 group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
       </div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{name}</h3>
+      <div className="p-6">
+        <h3 className="text-lg font-light mb-3">{name}</h3>
 
-        <div className="space-y-2 mb-4">
-          <p className="text-gray-600 text-sm">
-            £{priceIncVAT.toFixed(2)} (inc VAT)
+        <div className="space-y-1 mb-6">
+          <p className="text-gray-800">
+            £{priceIncVAT.toFixed(2)}{" "}
+            <span className="text-gray-500 text-sm">(inc VAT)</span>
           </p>
           <p className="text-gray-500 text-sm">
             £{priceExVAT.toFixed(2)} (ex VAT)
           </p>
         </div>
+
         <Link href={`/product/${id}`}>
           <button
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md
-                    hover:bg-blue-700 transition-colors duration-200"
+            className="w-full border border-black text-black py-2 px-4
+                    hover:bg-black hover:text-white transition-colors duration-200"
           >
             Select Options
           </button>

@@ -1,5 +1,6 @@
 import ProductDetail from "@/components/products/productDetail";
 import { PrismaClient } from "@prisma/client";
+import Breadcrumb from "@/components/layout/Breadcrumb";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,17 @@ export default async function ProductPage(props: {
   const { id } = await props.params;
   const productData = await getProductById(id);
 
-  return <ProductDetail product={productData} />;
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 md:px-12 py-8">
+        <Breadcrumb
+          productName={productData.name}
+          category={productData.productCategory}
+        />
+        <ProductDetail product={productData} />
+      </div>
+    </div>
+  );
 }
 
 async function getProductById(productId: string) {

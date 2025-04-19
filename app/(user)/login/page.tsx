@@ -24,7 +24,7 @@ export default function LoginPage() {
         const data = await response.json();
         setError(data.error || "Failed to send OTP");
       }
-    } catch{
+    } catch {
       setError("Failed to connect to server");
     }
   };
@@ -48,66 +48,73 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        Login to London Tiles
-      </h1>
+    <div className="w-full min-h-screen pt-20">
+      <div className="container mx-auto px-6 md:px-12 py-12">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-4xl md:text-5xl font-light mb-6 text-center">
+            Login
+          </h1>
+          <p className="text-gray-600 mb-8 text-center">
+            Enter your email to receive a one-time password
+          </p>
 
-      {!otpSent ? (
-        <form onSubmit={handleSendOTP} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Send OTP
-          </button>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        </form>
-      ) : (
-        <form onSubmit={handleSignIn} className="space-y-4">
-          <div>
-            <label
-              htmlFor="otp"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Enter OTP
-            </label>
-            <input
-              type="text"
-              id="otp"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter 6-digit OTP"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Sign In
-          </button>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        </form>
-      )}
+          {!otpSent ? (
+            <form onSubmit={handleSendOTP} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full border border-black text-black py-3 px-4 hover:bg-black hover:text-white transition-colors"
+              >
+                Send OTP
+              </button>
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            </form>
+          ) : (
+            <form onSubmit={handleSignIn} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="otp"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Enter OTP
+                </label>
+                <input
+                  type="text"
+                  id="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
+                  placeholder="Enter 6-digit OTP"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full border border-black text-black py-3 px-4 hover:bg-black hover:text-white transition-colors"
+              >
+                Verify OTP
+              </button>
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            </form>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

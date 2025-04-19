@@ -81,70 +81,117 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb Navigation */}
-        <nav className="mb-6 text-sm text-gray-600">
-          <ol className="flex space-x-2">
-            <li>Home</li>
-            <li>&gt;</li>
-            <li>
-              {product.productCategory.charAt(0).toUpperCase() +
-                product.productCategory.slice(1)}
-            </li>
-            <li>&gt;</li>
-            <li className="font-semibold text-gray-900">{product.name}</li>
-          </ol>
-        </nav>
+        {/* Product Description at Top */}
+        <div className="mb-8 bg-gray-50 p-4 rounded-lg shadow-sm">
+          <p className="text-gray-600 max-w-3xl">{product.description}</p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Product Image */}
-          <div className="space-y-4">
-            <div className="relative h-96 w-full bg-gray-100 rounded-lg overflow-hidden">
-              <Image
-                src={
-                  product.image[selectedImageIndex] ||
-                  "/upload/skirting_small.jpg"
-                }
-                alt={product.name}
-                layout="fill"
-                objectFit="contain"
-                className="rounded-lg"
-              />
+          {/* Left Column - Product Image and Discounts */}
+          <div className="space-y-6">
+            {/* Product Image */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="relative h-96 w-full bg-gray-100 rounded-lg overflow-hidden">
+                <Image
+                  src={
+                    product.image[selectedImageIndex] ||
+                    "/upload/skirting_small.jpg"
+                  }
+                  alt={product.name}
+                  layout="fill"
+                  objectFit="contain"
+                  className="rounded-lg"
+                />
+              </div>
+
+              {/* Thumbnail Gallery */}
+              {product.image.length > 1 && (
+                <div className="flex space-x-2 overflow-x-auto mt-4">
+                  {product.image.map((img, index) => (
+                    <div
+                      key={index}
+                      className={`relative h-20 w-20 flex-shrink-0 cursor-pointer border-2 rounded-md overflow-hidden ${
+                        selectedImageIndex === index
+                          ? "border-blue-500"
+                          : "border-transparent"
+                      }`}
+                      onClick={() => setSelectedImageIndex(index)}
+                    >
+                      <Image
+                        src={img}
+                        alt={`${product.name} - view ${index + 1}`}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Thumbnail Gallery */}
-            {product.image.length > 1 && (
-              <div className="flex space-x-2 overflow-x-auto">
-                {product.image.map((img, index) => (
-                  <div
-                    key={index}
-                    className={`relative h-20 w-20 flex-shrink-0 cursor-pointer border-2 rounded-md overflow-hidden ${
-                      selectedImageIndex === index
-                        ? "border-blue-500"
-                        : "border-transparent"
-                    }`}
-                    onClick={() => setSelectedImageIndex(index)}
-                  >
-                    <Image
-                      src={img}
-                      alt={`${product.name} - view ${index + 1}`}
-                      layout="fill"
-                      objectFit="cover"
-                    />
-                  </div>
-                ))}
+            {/* Discounts Section */}
+            <div className="grid grid-cols-1 gap-4">
+              {/* Quantity Discount Table */}
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h2 className="text-lg font-medium mb-4 pb-2 border-b">
+                  Quantity Discounts
+                </h2>
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="py-2 px-4 text-left">Quantity</th>
+                      <th className="py-2 px-4 text-left">Discount</th>
+                      <th className="py-2 px-4 text-left">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {quantityDiscounts.map((discount, index) => (
+                      <tr key={index} className="border-b last:border-b-0">
+                        <td className="py-2 px-4">{discount.quantity}</td>
+                        <td className="py-2 px-4">{discount.discount}</td>
+                        <td className="py-2 px-4">{discount.price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
+
+              {/* Bulk Discount Display */}
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <h2 className="text-lg font-medium mb-4 pb-2 border-b">
+                  Bulk Discount
+                </h2>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-blue-50 p-4 rounded-lg text-center">
+                    <div className="text-xl font-bold">10+</div>
+                    <div className="text-blue-600 font-medium">-1%</div>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg text-center">
+                    <div className="text-xl font-bold">25+</div>
+                    <div className="text-blue-600 font-medium">-3%</div>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg text-center">
+                    <div className="text-xl font-bold">50+</div>
+                    <div className="text-blue-600 font-medium">-5%</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500 mt-4">
+                  Discount calculated and applied automatically when added to
+                  basket
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Product Options */}
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
+            <h1 className="text-3xl font-light tracking-wide text-gray-900 mb-4 border-b pb-4">
               {product.name}
             </h1>
 
             {/* Product Specifications */}
             {/* Height */}
-            <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
               <span className="font-medium">Height</span>
               <select
                 className="select select-bordered w-48"
@@ -166,7 +213,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* Length Selector */}
-            <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
               <span className="font-medium">Length</span>
               <select
                 className="select select-bordered w-48"
@@ -188,7 +235,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* Thickness Selector */}
-            <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
               <span className="font-medium">Thickness</span>
               <select
                 className="select select-bordered w-48"
@@ -210,7 +257,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* Finish Selector */}
-            <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
               <span className="font-medium">Finish</span>
               <select
                 className="select select-bordered w-48"
@@ -232,7 +279,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* Rebate Selector */}
-            <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
               <span className="font-medium">Rebate</span>
               <select
                 className="select select-bordered w-48"
@@ -254,27 +301,28 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* Pricing Section */}
-            <div className="bg-gray-50 p-4 rounded-lg mt-6">
-              <div className="flex flex-col mb-4">
+            <div className="bg-gray-50 p-6 rounded-lg mt-6 shadow-sm">
+              <div className="flex flex-col mb-6">
                 <span className="text-2xl font-bold text-blue-600">
-                  £{product.priceIncVAT.toFixed(2)} (inc VAT)
+                  £{product.priceIncVAT.toFixed(2)}{" "}
+                  <span className="text-lg font-normal">(inc VAT)</span>
                 </span>
-                <span className="text-lg text-gray-600">
+                <span className="text-lg text-gray-600 mt-1">
                   £{product.priceExVAT.toFixed(2)} (ex VAT)
                 </span>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 bg-white p-1 rounded-lg shadow-sm">
                   <button
-                    className="btn btn-square btn-sm"
+                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   >
                     -
                   </button>
                   <input
                     type="number"
-                    className="input input-bordered w-20 text-center"
+                    className="w-16 text-center border-none focus:ring-0 bg-transparent"
                     value={quantity}
                     min="1"
                     onChange={(e) =>
@@ -282,14 +330,14 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                     }
                   />
                   <button
-                    className="btn btn-square btn-sm"
+                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors"
                     onClick={() => setQuantity(quantity + 1)}
                   >
                     +
                   </button>
                 </div>
                 <button
-                  className="btn btn-primary flex-1"
+                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
                   onClick={handleAddToBasket}
                 >
                   Add to Basket
@@ -298,65 +346,8 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
 
             {/* SKU Display */}
-            <div className="mt-4 text-sm text-gray-500">SKU: {product.id}</div>
-          </div>
-        </div>
-
-        {/* Product Description */}
-        <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Product Description</h3>
-          <p className="text-gray-600">{product.description}</p>
-        </div>
-
-        {/* Discounts Section */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Quantity Discount Table */}
-          <div className="card bg-white shadow-sm">
-            <div className="card-body">
-              <h2 className="card-title text-lg mb-4">Discount per Quantity</h2>
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Quantity</th>
-                    <th>Discount</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {quantityDiscounts.map((discount, index) => (
-                    <tr key={index}>
-                      <td>{discount.quantity}</td>
-                      <td>{discount.discount}</td>
-                      <td>{discount.price}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Bulk Discount Display */}
-          <div className="card bg-white shadow-sm">
-            <div className="card-body">
-              <h2 className="card-title text-lg mb-4">Bulk Discount</h2>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-xl font-bold">10+</div>
-                  <div className="text-blue-600 font-medium">-1%</div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-xl font-bold">25+</div>
-                  <div className="text-blue-600 font-medium">-3%</div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-xl font-bold">50+</div>
-                  <div className="text-blue-600 font-medium">-5%</div>
-                </div>
-              </div>
-              <p className="text-sm text-gray-500 mt-4">
-                Discount calculated and applied automatically when added to
-                basket
-              </p>
+            <div className="mt-4 text-sm text-gray-500 border-t pt-4">
+              SKU: {product.id}
             </div>
           </div>
         </div>

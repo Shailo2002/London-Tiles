@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useCart } from "@/lib/context/CartContext";
 
-
 interface AddressFormData {
   firstName: string;
   lastName: string;
@@ -42,8 +41,6 @@ export default function CheckoutPage() {
     email: "",
   });
 
-  
-
   const handleProceedToPayment = async () => {
     try {
       const response = await fetch("/api/create-order", {
@@ -77,92 +74,103 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Order Summary */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
-          <div className="space-y-4">
-            {items.map((item) => (
-              <div key={item.id} className="flex justify-between">
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-gray-600">
-                    Quantity: {item.quantity} | Height: {item.options.height}mm
-                    | Length: {item.options.length}mm
+    <div className="w-full min-h-screen pt-20">
+      <div className="container mx-auto px-6 md:px-12 py-12">
+        <h1 className="text-4xl md:text-5xl font-light mb-12">Checkout</h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Order Summary */}
+          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-2xl font-light mb-6">Order Summary</h2>
+            <div className="space-y-4 mb-8">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between pb-4 last:pb-0 border-b last:border-b-0"
+                >
+                  <div>
+                    <p className="font-light text-lg">{item.name}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Quantity: {item.quantity} | Height: {item.options.height}
+                      mm | Length: {item.options.length}mm
+                    </p>
+                  </div>
+                  <p className="font-medium text-blue-600">
+                    £{(item.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
-                <p className="font-medium">
-                  £{(item.price * item.quantity).toFixed(2)}
-                </p>
-              </div>
-            ))}
-            <div className="border-t pt-4">
-              <div className="flex justify-between">
-                <p>Subtotal:</p>
-                <p>£{subtotal.toFixed(2)}</p>
-              </div>
-              <div className="flex justify-between">
-                <p>VAT:</p>
-                <p>£{vat.toFixed(2)}</p>
-              </div>
-              <div className="flex justify-between font-bold">
-                <p>Total:</p>
-                <p>£{total.toFixed(2)}</p>
+              ))}
+              <div className="border-t pt-4 space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span>£{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">VAT (20%)</span>
+                  <span>£{vat.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Shipping</span>
+                  <span>Free</span>
+                </div>
+                <div className="flex justify-between font-medium pt-3 border-t">
+                  <span>Total</span>
+                  <span className="text-blue-600">£{total.toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Address Forms */}
-        <div className="space-y-8">
-          {/* Billing Address Form */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4">Billing Address</h2>
-            <AddressForm
-              address={billingAddress}
-              setAddress={setBillingAddress}
-            />
-          </div>
-
-          {/* Different Shipping Address Checkbox */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="differentShipping"
-              checked={differentShippingAddress}
-              onChange={(e) => setDifferentShippingAddress(e.target.checked)}
-              className="mr-2"
-            />
-            <label htmlFor="differentShipping">
-              Deliver to a different address?
-            </label>
-          </div>
-
-          {/* Shipping Address Form */}
-          {differentShippingAddress && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-4">Shipping Address</h2>
+          {/* Address Forms */}
+          <div className="space-y-8">
+            <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-2xl font-light mb-6">Billing Address</h2>
               <AddressForm
-                address={shippingAddress}
-                setAddress={setShippingAddress}
+                address={billingAddress}
+                setAddress={setBillingAddress}
               />
             </div>
-          )}
 
-          <button
-            onClick={handleProceedToPayment}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
-          >
-            Proceed to Pay
-          </button>
+            <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex items-center mb-6">
+                <input
+                  type="checkbox"
+                  id="differentShipping"
+                  checked={differentShippingAddress}
+                  onChange={(e) =>
+                    setDifferentShippingAddress(e.target.checked)
+                  }
+                  className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="differentShipping" className="font-light">
+                  Ship to a different address?
+                </label>
+              </div>
+
+              {differentShippingAddress && (
+                <div>
+                  <h2 className="text-2xl font-light mb-6">Shipping Address</h2>
+                  <AddressForm
+                    address={shippingAddress}
+                    setAddress={setShippingAddress}
+                  />
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={handleProceedToPayment}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Proceed to Payment
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// Address Form Component
 function AddressForm({
   address,
   setAddress,
@@ -170,92 +178,176 @@ function AddressForm({
   address: AddressFormData;
   setAddress: (address: AddressFormData) => void;
 }) {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setAddress({ ...address, [name]: value });
+  };
+
   return (
-    <form className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="firstName"
+            className="block text-sm text-gray-600 mb-1"
+          >
+            First Name *
+          </label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            value={address.firstName}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="lastName"
+            className="block text-sm text-gray-600 mb-1"
+          >
+            Last Name *
+          </label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            value={address.lastName}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="company" className="block text-sm text-gray-600 mb-1">
+          Company Name (Optional)
+        </label>
         <input
           type="text"
-          placeholder="First Name"
-          value={address.firstName}
-          onChange={(e) =>
-            setAddress({ ...address, firstName: e.target.value })
-          }
-          className="border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={address.lastName}
-          onChange={(e) => setAddress({ ...address, lastName: e.target.value })}
-          className="border p-2 rounded"
-          required
+          id="company"
+          name="company"
+          value={address.company}
+          onChange={handleChange}
+          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
         />
       </div>
-      <input
-        type="text"
-        placeholder="Company (optional)"
-        value={address.company || ""}
-        onChange={(e) => setAddress({ ...address, company: e.target.value })}
-        className="border p-2 rounded w-full"
-      />
-      <input
-        type="text"
-        placeholder="Street Address"
-        value={address.street1}
-        onChange={(e) => setAddress({ ...address, street1: e.target.value })}
-        className="border p-2 rounded w-full"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Apartment, suite, etc. (optional)"
-        value={address.street2 || ""}
-        onChange={(e) => setAddress({ ...address, street2: e.target.value })}
-        className="border p-2 rounded w-full"
-      />
-      <div className="grid grid-cols-2 gap-4">
+
+      <div>
+        <label htmlFor="street1" className="block text-sm text-gray-600 mb-1">
+          Street Address *
+        </label>
         <input
           type="text"
-          placeholder="City"
-          value={address.city}
-          onChange={(e) => setAddress({ ...address, city: e.target.value })}
-          className="border p-2 rounded"
+          id="street1"
+          name="street1"
+          value={address.street1}
+          onChange={handleChange}
           required
-        />
-        <input
-          type="text"
-          placeholder="Postal Code"
-          value={address.postcode}
-          onChange={(e) => setAddress({ ...address, postcode: e.target.value })}
-          className="border p-2 rounded"
-          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
         />
       </div>
-      <input
-        type="text"
-        placeholder="Country"
-        value={address.country}
-        onChange={(e) => setAddress({ ...address, country: e.target.value })}
-        className="border p-2 rounded w-full"
-        required
-      />
-      <input
-        type="tel"
-        placeholder="Phone"
-        value={address.phone}
-        onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-        className="border p-2 rounded w-full"
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={address.email}
-        onChange={(e) => setAddress({ ...address, email: e.target.value })}
-        className="border p-2 rounded w-full"
-        required
-      />
-    </form>
+
+      <div>
+        <label htmlFor="street2" className="block text-sm text-gray-600 mb-1">
+          Apartment, suite, etc. (Optional)
+        </label>
+        <input
+          type="text"
+          id="street2"
+          name="street2"
+          value={address.street2}
+          onChange={handleChange}
+          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="city" className="block text-sm text-gray-600 mb-1">
+            City *
+          </label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            value={address.city}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="postcode"
+            className="block text-sm text-gray-600 mb-1"
+          >
+            Postcode *
+          </label>
+          <input
+            type="text"
+            id="postcode"
+            name="postcode"
+            value={address.postcode}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="country" className="block text-sm text-gray-600 mb-1">
+          Country *
+        </label>
+        <select
+          id="country"
+          name="country"
+          value={address.country}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+        >
+          <option value="">Select a country</option>
+          <option value="United Kingdom">United Kingdom</option>
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="phone" className="block text-sm text-gray-600 mb-1">
+            Phone *
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={address.phone}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-sm text-gray-600 mb-1">
+            Email *
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={address.email}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

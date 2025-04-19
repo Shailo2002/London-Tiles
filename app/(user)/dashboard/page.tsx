@@ -96,247 +96,144 @@ function DashboardContent() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
-      <h1 className="text-3xl font-bold mb-8">My Account</h1>
+    <div className="w-full min-h-screen pt-20">
+      <div className="container mx-auto px-6 md:px-12 py-12">
+        <h1 className="text-4xl md:text-5xl font-light mb-8">My Account</h1>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Left sidebar */}
-        <div className="w-full md:w-1/4">
-          <nav className="bg-gray-50 p-4 rounded-lg">
-            <ul className="space-y-2">
-              <li>
-                <button
-                  onClick={() => setActiveTab("dashboard")}
-                  className={`w-full text-left p-2 ${
-                    activeTab === "dashboard"
-                      ? "text-green-600 font-medium"
-                      : ""
-                  }`}
-                >
-                  Dashboard
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab("orders")}
-                  className={`w-full text-left p-2 ${
-                    activeTab === "orders" ? "text-green-600 font-medium" : ""
-                  }`}
-                >
-                  Orders
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab("downloads")}
-                  className={`w-full text-left p-2 ${
-                    activeTab === "downloads"
-                      ? "text-green-600 font-medium"
-                      : ""
-                  }`}
-                >
-                  Downloads
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab("addresses")}
-                  className={`w-full text-left p-2 ${
-                    activeTab === "addresses"
-                      ? "text-green-600 font-medium"
-                      : ""
-                  }`}
-                >
-                  Addresses
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    localStorage.removeItem("isLoggedIn");
-                    router.push("/login");
-                  }}
-                  className="w-full text-left p-2"
-                >
-                  Log out
-                </button>
-              </li>
-            </ul>
-          </nav>
-
-          {/* Interested items section */}
-          <div className="mt-8 bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium mb-4">Find Products</h3>
-            <div className="flex">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for products..."
-                className="flex-1 border rounded-l-md px-4 py-2"
-              />
-              <button
-                onClick={handleSearch}
-                className="bg-green-600 text-white px-4 py-2 rounded-r-md"
-              >
-                Search
-              </button>
-            </div>
-
-            {interestedItems.length > 0 && (
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">Found Items:</h4>
-                <ul className="space-y-2">
-                  {interestedItems.map((item) => (
-                    <li key={item.id} className="border-b pb-2">
-                      <Link
-                        href={`/product/${item.id}`}
-                        className="hover:text-green-600"
-                      >
-                        {item.name}
-                      </Link>
-                      <div className="text-sm text-gray-500">
-                        £{item.priceIncVAT.toFixed(2)}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        <div className="mb-8">
+          <div className="flex border-b border-gray-200">
+            <button
+              className={`py-4 px-6 font-light ${
+                activeTab === "orders"
+                  ? "border-b-2 border-black"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setActiveTab("orders")}
+            >
+              Orders
+            </button>
+            <button
+              className={`py-4 px-6 font-light ${
+                activeTab === "search"
+                  ? "border-b-2 border-black"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setActiveTab("search")}
+            >
+              Search Products
+            </button>
           </div>
         </div>
 
-        {/* Main content */}
-        <div className="w-full md:w-3/4">
-          {activeTab === "dashboard" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Dashboard</h2>
-              <p>
-                Hello, <strong>{email}</strong> (not {email}?{" "}
-                <button
-                  className="text-green-600"
-                  onClick={() => {
-                    localStorage.removeItem("isLoggedIn");
-                    router.push("/login");
-                  }}
-                >
-                  Log out
-                </button>
-                )
-              </p>
-              <p className="mt-4">
-                From your account dashboard you can view your recent orders,
-                manage your shipping and billing addresses, and more.
-              </p>
-            </div>
-          )}
+        {activeTab === "orders" && (
+          <div>
+            {loading ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">Loading orders...</p>
+              </div>
+            ) : orders.length > 0 ? (
+              <div className="space-y-6">
+                {orders.map((order) => (
+                  <div key={order.id} className="border border-gray-100 p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-lg font-light">
+                          Order #{order.id}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">£{order.total.toFixed(2)}</p>
+                        <p
+                          className={`text-sm ${getStatusClass(order.status)}`}
+                        >
+                          {order.status.charAt(0).toUpperCase() +
+                            order.status.slice(1)}
+                        </p>
+                      </div>
+                    </div>
 
-          {activeTab === "orders" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Orders</h2>
-
-              {loading ? (
-                <p>Loading orders...</p>
-              ) : orders.length === 0 ? (
-                <p>No orders found.</p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-4">Order</th>
-                        <th className="text-left py-4">Date</th>
-                        <th className="text-left py-4">Status</th>
-                        <th className="text-left py-4">Total</th>
-                        <th className="text-left py-4">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orders.map((order) => (
-                        <tr key={order.id} className="border-b">
-                          <td className="py-4">
-                            <Link
-                              href={`/order/${order.id}`}
-                              className="text-green-600"
-                            >
-                              #{order.id.substring(0, 6)}
-                            </Link>
-                          </td>
-                          <td className="py-4">
-                            {new Date(order.createdAt).toLocaleDateString(
-                              "en-GB",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}
-                          </td>
-                          <td
-                            className={`py-4 ${getStatusClass(order.status)}`}
-                          >
-                            {order.status.charAt(0).toUpperCase() +
-                              order.status.slice(1).replace("_", " ")}
-                          </td>
-                          <td className="py-4">
-                            £{order.total.toFixed(2)} for {order.items.length}{" "}
-                            items
-                          </td>
-                          <td className="py-4">
-                            <div className="flex gap-2">
-                              {order.status === "payment_failed" && (
-                                <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm">
-                                  Pay
-                                </button>
-                              )}
-                              <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm">
-                                View
-                              </button>
-                              {order.status === "pending" && (
-                                <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm">
-                                  Cancel
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
+                    <div className="space-y-4">
+                      {order.items.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex justify-between text-sm"
+                        >
+                          <div>
+                            <p>Quantity: {item.quantity}</p>
+                            <p>
+                              Height: {item.height}mm | Length: {item.length}mm
+                              | Thickness: {item.thickness}mm
+                            </p>
+                            {item.finish && <p>Finish: {item.finish}</p>}
+                            {item.rebate && <p>Rebate: {item.rebate}</p>}
+                          </div>
+                          <p className="font-medium">
+                            £{(item.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No orders found.</p>
+              </div>
+            )}
+          </div>
+        )}
 
-          {activeTab === "downloads" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Downloads</h2>
-              <p>No downloads available.</p>
-            </div>
-          )}
-
-          {activeTab === "addresses" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Addresses</h2>
-              <p>
-                The following addresses will be used on the checkout page by
-                default.
-              </p>
-
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Billing Address</h3>
-                  <p>You have not set up this type of address yet.</p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Shipping Address</h3>
-                  <p>You have not set up this type of address yet.</p>
-                </div>
+        {activeTab === "search" && (
+          <div>
+            <div className="mb-8">
+              <div className="flex gap-4">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for products..."
+                  className="flex-1 px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="border border-black text-black px-6 py-3 hover:bg-black hover:text-white transition-colors"
+                >
+                  Search
+                </button>
               </div>
             </div>
-          )}
-        </div>
+
+            {interestedItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {interestedItems.map((product) => (
+                  <div key={product.id} className="border border-gray-100 p-6">
+                    <h3 className="text-lg font-light mb-2">{product.name}</h3>
+                    <p className="font-medium mb-4">
+                      £{product.priceIncVAT.toFixed(2)}
+                    </p>
+                    <Link href={`/product/${product.id}`}>
+                      <button className="w-full border border-black text-black py-2 px-4 hover:bg-black hover:text-white transition-colors">
+                        View Product
+                      </button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">
+                  {searchQuery
+                    ? "No products found matching your search."
+                    : "Search for products to see results."}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -344,7 +241,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div>Loading dashboard...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <DashboardContent />
     </Suspense>
   );
