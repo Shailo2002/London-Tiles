@@ -10,7 +10,7 @@ export default function DashboardPage() {
     if (!isLoggedIn) {
       router.push("/login");
     }
-  }, []);
+  }, [router]);
 
   return (
     <div className="p-6">

@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function PaymentCancelledPage() {
+// This component will use the search params after suspense
+function CancelledContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [isProcessed, setIsProcessed] = useState(false);
@@ -17,9 +18,7 @@ export default function PaymentCancelledPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ orderId }),
           });
-
           const data = await response.json();
-
           if (data.success) {
             setIsProcessed(true);
           } else {
@@ -39,7 +38,6 @@ export default function PaymentCancelledPage() {
       <h1 className="text-2xl font-bold mb-4">
         {error ? "Error" : "Payment Cancelled"}
       </h1>
-
       {error ? (
         <p className="text-red-600">{error}</p>
       ) : (
@@ -50,5 +48,20 @@ export default function PaymentCancelledPage() {
         </p>
       )}
     </div>
+  );
+}
+
+// Main page component
+export default function PaymentCancelledPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-8 text-center">
+          Loading...
+        </div>
+      }
+    >
+      <CancelledContent />
+    </Suspense>
   );
 }

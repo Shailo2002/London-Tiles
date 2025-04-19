@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { prisma } from './prisma'
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from '@/auth'
 
 interface JWTPayload {
   id: string

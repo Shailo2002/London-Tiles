@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,7 +24,7 @@ export default function LoginPage() {
         const data = await response.json();
         setError(data.error || "Failed to send OTP");
       }
-    } catch (err) {
+    } catch{
       setError("Failed to connect to server");
     }
   };
@@ -109,13 +108,6 @@ export default function LoginPage() {
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </form>
       )}
-
-      <p className="mt-4 text-center text-sm text-gray-600">
-        Don't have an account?{" "}
-        <Link href="/signup" className="text-blue-600 hover:underline">
-          Sign up
-        </Link>
-      </p>
     </div>
   );
 }

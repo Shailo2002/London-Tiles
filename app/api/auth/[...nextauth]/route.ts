@@ -1,4 +1,3 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
@@ -12,7 +11,6 @@ const handler = NextAuth({
     Credentials({
       name: "Email",
       credentials: {
-        
         email: { label: "Email", type: "email" },
         otp: { label: "OTP", type: "text" },
       },
@@ -25,7 +23,6 @@ const handler = NextAuth({
           const storedOTP = await prisma.otp.findUnique({
             where: { email: credentials.email as string },
           });
-          console.log("storedOTP",storedOTP);
 
           if (!storedOTP) throw new Error("OTP not found");
           if (storedOTP.otp !== credentials.otp) throw new Error("Invalid OTP");
@@ -53,4 +50,3 @@ const handler = NextAuth({
 });
 
 export { handler as GET, handler as POST };
-export { handler as auth, handler as signIn, handler as signOut };
