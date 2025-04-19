@@ -32,7 +32,6 @@ interface Product {
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("orders");
@@ -46,7 +45,6 @@ function DashboardContent() {
     } else {
       const emailParam = searchParams.get("email");
       if (emailParam) {
-        setEmail(emailParam);
         fetchOrders(emailParam);
       }
     }
