@@ -90,7 +90,7 @@ export async function POST(req: Request) {
       }],
       application_context: {
         return_url: `http://localhost:3000/payment-success?orderId=${order.id}`,
-        cancel_url: `http://localhost:3000/payment-cancelled`,
+        cancel_url: `http://localhost:3000/payment-cancelled?orderId=${order.id}`
       },
     });
 

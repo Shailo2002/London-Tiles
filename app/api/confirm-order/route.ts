@@ -6,7 +6,6 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { orderId } = body;
 
-  console.log("Received orderId:", orderId);
 
   try {
     const existingOrder = await prisma.order.findUnique({

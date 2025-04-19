@@ -41,10 +41,16 @@ model Products {
   updatedAt       DateTime @updatedAt
 }
 
+enum OrderStatus {
+  pending
+  placed
+  payment_failed
+}
+
 model Order {
   id                String      @id @default(uuid())
   paypalOrderId     String?     @unique
-  status            String
+  status            OrderStatus @default(pending)
   subtotal          Float // e.g., £59.16
   shipping          String? // e.g., "Free" or £5.00
   vat               Float // e.g., £11.83
