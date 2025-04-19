@@ -1,12 +1,17 @@
+import Image from "next/image";
+
 const Footer = () => {
   return (
     <div className="w-full">
       {/* Full Image Section */}
-      <div className="w-full h-screen">
-        <img
+      <div className="w-full h-screen relative">
+        <Image
           src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745084638/R_g1keju.jpg"
           alt="Featured Project"
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
         />
       </div>
 
@@ -29,7 +34,7 @@ const Footer = () => {
               <p className="mb-2">+44 (0)333 700 4400</p>
               <p className="mb-4">info@nationalskirting.co.uk</p>
               <div className="flex gap-4 text-lg">
-                {/* Replace these with real icons if desired */}
+                {/* Social Icons */}
                 <span className="bg-white rounded-full w-5 h-5" />
                 <span className="bg-white rounded-full w-5 h-5" />
                 <span className="bg-white rounded-full w-5 h-5" />
@@ -79,24 +84,27 @@ const Footer = () => {
                   <a href="#">Privacy Policy</a>
                 </li>
               </ul>
-              {/* <p className="mb-2">Secure Payment Methods</p>
+              {/* Uncomment and update payment methods if needed
               <div className="flex flex-wrap gap-2">
-                <img
+                <Image
                   src="/mastercard.svg"
                   alt="Mastercard"
+                  width={40}
+                  height={25}
                   className="w-10 h-auto"
                 />
-                <img src="/maestro.svg" alt="Maestro" className="w-10 h-auto" />
-                <img src="/visa.svg" alt="Visa" className="w-10 h-auto" />
-                <img src="/amex.svg" alt="Amex" className="w-10 h-auto" />
-                <img
-                  src="/applepay.svg"
-                  alt="Apple Pay"
+                <Image
+                  src="/maestro.svg"
+                  alt="Maestro"
+                  width={40}
+                  height={25}
                   className="w-10 h-auto"
                 />
-                <img
-                  src="/googlepay.svg"
-                  alt="Google Pay"
+                <Image
+                  src="/visa.svg"
+                  alt="Visa"
+                  width={40}
+                  height={25}
                   className="w-10 h-auto"
                 />
               </div> */}
@@ -110,9 +118,12 @@ const Footer = () => {
               <p className="text-white font-semibold">
                 Christmas Holiday Information
               </p>
-              {/* <img
+              {/* Uncomment if needed
+              <Image
                 src="/britain-flag.svg"
                 alt="Proudly British"
+                width={128}
+                height={76}
                 className="mt-6 w-32"
               /> */}
             </div>

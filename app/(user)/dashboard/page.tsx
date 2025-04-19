@@ -1,6 +1,6 @@
 // dashboard/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -23,7 +23,13 @@ interface Order {
   items: OrderItem[];
 }
 
-export default function DashboardPage() {
+interface Product {
+  id: string;
+  name: string;
+  priceIncVAT: number;
+}
+
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -31,14 +37,13 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("orders");
   const [searchQuery, setSearchQuery] = useState("");
-  const [interestedItems, setInterestedItems] = useState<any[]>([]);
+  const [interestedItems, setInterestedItems] = useState<Product[]>([]);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (!isLoggedIn) {
       router.push("/login");
     } else {
-      // Get email from URL query parameter
       const emailParam = searchParams.get("email");
       if (emailParam) {
         setEmail(emailParam);
@@ -322,13 +327,11 @@ export default function DashboardPage() {
                 <div>
                   <h3 className="text-lg font-medium mb-2">Billing Address</h3>
                   <p>You have not set up this type of address yet.</p>
-                 
                 </div>
 
                 <div>
                   <h3 className="text-lg font-medium mb-2">Shipping Address</h3>
                   <p>You have not set up this type of address yet.</p>
-            
                 </div>
               </div>
             </div>
@@ -336,5 +339,13 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div>Loading dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
