@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { prisma } from './prisma'
+import { auth } from "@/app/api/auth/[...nextauth]/route";
 
 interface JWTPayload {
   id: string
@@ -31,4 +32,9 @@ export async function verifyAuth(token: string) {
     console.error('Auth error:', error);
     throw new Error('Invalid token')
   }
+}
+
+export async function getCurrentUser() {
+  const session = await auth();
+  return session?.user;
 }

@@ -1,11 +1,25 @@
 "use client";
+import { useEffect, useState } from "react";
 import { ShoppingCart, Search } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
+import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { items } = useCart();
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    signOut({ redirect: false });
+    window.location.href = "/login";
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 px-6 py-4 bg-black/40 backdrop-blur-md text-white flex justify-between items-center">
@@ -31,9 +45,26 @@ export default function Navbar() {
             </span>
           )}
         </Link>
-        <span className="text-sm underline cursor-pointer">
-          Sign In/Register
-        </span>
+
+        {loggedIn ? (
+          <div className="relative group">
+            <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center cursor-pointer">
+              U
+            </div>
+            <div className="absolute right-0 mt-2 w-24 bg-white text-black rounded-md shadow-md hidden group-hover:block">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-gray-200"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Link href="/login" className="text-sm underline cursor-pointer">
+            Sign In/Register
+          </Link>
+        )}
       </div>
     </header>
   );
