@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Products" ALTER COLUMN "Finish" SET DEFAULT ARRAY[]::TEXT[],
+ALTER COLUMN "Rebate" SET DEFAULT ARRAY[]::TEXT[];
