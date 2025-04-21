@@ -27,8 +27,6 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     height: "",
     length: "",
     thickness: "",
-    finish: "",
-    rebate: "",
   });
 
   const [quantity, setQuantity] = useState(1);
@@ -38,8 +36,6 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
   const heightOptions = product.Height || [];
   const lengthOptions = product.Length || [];
   const thicknessOptions = product.Thickness || [];
-  const finishOptions = product.Finish || [];
-  const rebateOptions = product.Rebate || [];
 
   // Discount data
   const quantityDiscounts = [
@@ -50,13 +46,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
 
   const handleAddToBasket = () => {
     // Check if all required options are selected
-    const requiredOptions = [
-      "height",
-      "length",
-      "thickness",
-      "finish",
-      "rebate",
-    ];
+    const requiredOptions = ["height", "length", "thickness"];
     const missingOptions = requiredOptions.filter(
       (option) => !selectedOptions[option as keyof typeof selectedOptions]
     );
@@ -249,50 +239,6 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
               >
                 <option value="">Choose Thickness</option>
                 {thicknessOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Finish Selector */}
-            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
-              <span className="font-medium">Finish</span>
-              <select
-                className="select select-bordered w-48"
-                value={selectedOptions.finish}
-                onChange={(e) =>
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    finish: e.target.value,
-                  })
-                }
-              >
-                <option value="">Choose Finish</option>
-                {finishOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Rebate Selector */}
-            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
-              <span className="font-medium">Rebate</span>
-              <select
-                className="select select-bordered w-48"
-                value={selectedOptions.rebate}
-                onChange={(e) =>
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    rebate: e.target.value,
-                  })
-                }
-              >
-                <option value="">Choose Rebate</option>
-                {rebateOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
                   </option>

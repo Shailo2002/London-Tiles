@@ -34,7 +34,6 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
-
 model Products {
   id              String   @id @default(uuid())
   name            String   @unique

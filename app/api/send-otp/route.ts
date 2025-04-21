@@ -47,7 +47,6 @@ export async function POST(request: Request) {
       text: `Your OTP is: ${otp}\nExpires in 10 minutes`,
     });
     
-         console.log("sending otp from backend",otp);
 
 
     return NextResponse.json({ success: true });

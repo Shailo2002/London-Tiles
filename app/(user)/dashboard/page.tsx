@@ -165,8 +165,6 @@ function DashboardContent() {
                               Height: {item.height}mm | Length: {item.length}mm
                               | Thickness: {item.thickness}mm
                             </p>
-                            {item.finish && <p>Finish: {item.finish}</p>}
-                            {item.rebate && <p>Rebate: {item.rebate}</p>}
                           </div>
                           <p className="font-medium">
                             £{(item.price * item.quantity).toFixed(2)}
