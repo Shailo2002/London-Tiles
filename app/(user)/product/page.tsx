@@ -1,10 +1,35 @@
 import Image from "next/image";
+import { prisma } from "@/lib/prisma";
+import ProductCard from "@/components/products/productCard";
+import Link from "next/link";
 
-export default function ProductPage() {
+export const dynamic = "force-dynamic";
+
+async function getAllProducts() {
+  try {
+    const products = await prisma.products.findMany({
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        priceIncVAT: true,
+        priceExVAT: true,
+      },
+    });
+    return products;
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return [];
+  }
+}
+
+export default async function ProductPage() {
+  const products = await getAllProducts();
+
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[50vh] min-h-[500px] w-full">
+      <div className="relative h-[50vh] min-h-[300px] w-full">
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745089911/skirting-king-home_se2guz.jpg"
@@ -29,57 +54,46 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Categories Section */}
-      <div className="container mx-auto px-6 md:px-12 py-16">
-        <h2 className="text-3xl font-light mb-12">Product Categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="relative h-80 overflow-hidden group">
-            <div className="absolute inset-0 bg-black/30 z-10 group-hover:bg-black/40 transition-all duration-300"></div>
-            <div className="relative w-full h-full">
-              <Image
-                src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745089911/skirting-king-home_se2guz.jpg"
-                alt="Skirting Boards"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-            <div className="absolute bottom-0 left-0 p-6 z-20">
-              <h2 className="text-2xl font-light text-white mb-2">
-                Skirting Boards
-              </h2>
-              <a
-                href="/product-category/skirting"
-                className="inline-block border border-white text-white px-6 py-2 hover:bg-white hover:text-black transition"
-              >
-                VIEW COLLECTION
-              </a>
-            </div>
+      {/* Category Navigation */}
+      <div className="">
+        <div className="container mx-auto px-6 md:px-12 py-6">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/product-category/skirting"
+              className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200"
+            >
+              Skirting Boards
+            </Link>
+            <Link
+              href="/product-category/architrave"
+              className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200"
+            >
+              Architrave
+            </Link>
           </div>
+        </div>
+      </div>
 
-          <div className="relative h-80 overflow-hidden group">
-            <div className="absolute inset-0 bg-black/30 z-10 group-hover:bg-black/40 transition-all duration-300"></div>
-            <div className="relative w-full h-full">
-              <Image
-                src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745089911/skirting-king-home_se2guz.jpg"
-                alt="Architrave"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, 50vw"
+      {/* Products Section */}
+      <div className="container mx-auto px-6 md:px-12 py-16">
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                image={product.image}
+                priceIncVAT={product.priceIncVAT}
+                priceExVAT={product.priceExVAT}
               />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <p className="text-gray-500 text-lg">No products found.</p>
             </div>
-            <div className="absolute bottom-0 left-0 p-6 z-20">
-              <h2 className="text-2xl font-light text-white mb-2">
-                Architrave
-              </h2>
-              <a
-                href="/product-category/architrave"
-                className="inline-block border border-white text-white px-6 py-2 hover:bg-white hover:text-black transition"
-              >
-                VIEW COLLECTION
-              </a>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

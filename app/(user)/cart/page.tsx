@@ -13,7 +13,9 @@ export default function CartPage() {
     return (
       <div className="w-full min-h-screen pt-20">
         <div className="container mx-auto px-6 md:px-12 py-12">
-          <h1 className="text-4xl md:text-5xl font-light mb-6">Your Cart</h1>
+          <h1 className="text-4xl md:text-5xl font-serif font-light mb-6">
+            Your Cart
+          </h1>
           <div className="text-center py-16">
             <p className="text-gray-600 mb-6 text-lg">Your cart is empty</p>
             <Link
@@ -31,7 +33,7 @@ export default function CartPage() {
   return (
     <div className="w-full min-h-screen pt-20">
       <div className="container mx-auto px-6 md:px-12 py-12">
-        <h1 className="text-4xl md:text-5xl font-light mb-12">Your Cart</h1>
+        <h1 className="text-4xl md:text-5xl font-serif tracking-tight mb-12">Your Cart</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Cart Items */}

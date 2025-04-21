@@ -76,7 +76,7 @@ export default function CheckoutPage() {
   return (
     <div className="w-full min-h-screen pt-20">
       <div className="container mx-auto px-6 md:px-12 py-12">
-        <h1 className="text-4xl md:text-5xl font-light mb-12">Checkout</h1>
+        <h1 className="text-4xl md:text-5xl font-serif mb-12">Checkout</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Order Summary */}

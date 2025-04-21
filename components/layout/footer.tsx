@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -14,124 +15,95 @@ const Footer = () => {
           priority
         />
       </div>
-
       {/* Footer Text Section */}
-      <footer className="bg-[#1A1818] text-white px-6 md:px-12 pt-12 pb-6">
-        <div className="max-w-7xl mx-auto text-center space-y-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-left text-sm">
+      <footer className="bg-[#1A1818] text-white px-6 pt-12 pb-6">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          <div className="flex flex-col md:flex-row justify-center gap-16 md:gap-28 mb-12">
             {/* Contact Info */}
             <div>
-              <h3 className="font-semibold text-base mb-2">Contact Info</h3>
-              <p className="mb-2">
-                <span className="block">
-                  Unit 14, Queniborough Industrial Estate,
-                </span>
-                <span className="block">
-                  Melton Rd, Queniborough, Leicester
-                </span>
-                <span className="block">LE7 3FP</span>
-              </p>
-              <p className="mb-2">+44 (0)333 700 4400</p>
-              <p className="mb-4">info@nationalskirting.co.uk</p>
-              <div className="flex gap-4 text-lg">
-                {/* Social Icons */}
-                <span className="bg-white rounded-full w-5 h-5" />
-                <span className="bg-white rounded-full w-5 h-5" />
-                <span className="bg-white rounded-full w-5 h-5" />
-                <span className="bg-white rounded-full w-5 h-5" />
+              <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
+              <div className="space-y-2 text-sm">
+                <p>
+                  London Tiles,
+                  <br />
+                  Wembley, London,
+                  <br />
+                  TWA 7RU
+                </p>
+                <p>+44 (0)777 746 1161</p>
+                <p>londontiles7@gmail.com</p>
               </div>
             </div>
-
             {/* Help */}
             <div>
-              <h3 className="font-semibold text-base mb-2">Help</h3>
-              <ul className="space-y-1">
+              <h3 className="text-lg font-semibold mb-4">Help</h3>
+              <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#">Delivery Information</a>
+                  <Link href="/login" className="hover:text-gray-300">
+                    Delivery Information
+                  </Link>
                 </li>
                 <li>
-                  <a href="#">Refund and Returns</a>
+                  <Link href="/return-refund" className="hover:text-gray-300">
+                    Refund and Returns
+                  </Link>
                 </li>
                 <li>
-                  <a href="#">FAQ’s</a>
+                  <Link href="/faqs" className="hover:text-gray-300">
+                    FAQ's
+                  </Link>
                 </li>
                 <li>
-                  <a href="#">Trade Accounts</a>
+                  <Link href="/login" className="hover:text-gray-300">
+                    My account
+                  </Link>
                 </li>
                 <li>
-                  <a href="#">My account</a>
+                  <Link href="/about-us" className="hover:text-gray-300">
+                    About Us
+                  </Link>
                 </li>
                 <li>
-                  <a href="#">About Us</a>
-                </li>
-                <li>
-                  <a href="#">Contact Us</a>
+                  <Link href="/contact-us" className="hover:text-gray-300">
+                    Contact Us
+                  </Link>
                 </li>
               </ul>
             </div>
-
             {/* Legal */}
             <div>
-              <h3 className="font-semibold text-base mb-2">Legal</h3>
-              <ul className="space-y-1 mb-4">
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#">Terms and Conditions</a>
-                </li>
-                <li>
-                  <a href="#">Cookies Policy</a>
-                </li>
-                <li>
-                  <a href="#">Privacy Policy</a>
+                  <Link
+                    href="/terms-conditions"
+                    className="hover:text-gray-300"
+                  >
+                    Terms and Conditions
+                  </Link>
                 </li>
               </ul>
-              {/* Uncomment and update payment methods if needed
-              <div className="flex flex-wrap gap-2">
-                <Image
-                  src="/mastercard.svg"
-                  alt="Mastercard"
-                  width={40}
-                  height={25}
-                  className="w-10 h-auto"
-                />
-                <Image
-                  src="/maestro.svg"
-                  alt="Maestro"
-                  width={40}
-                  height={25}
-                  className="w-10 h-auto"
-                />
-                <Image
-                  src="/visa.svg"
-                  alt="Visa"
-                  width={40}
-                  height={25}
-                  className="w-10 h-auto"
-                />
-              </div> */}
-            </div>
-
-            {/* Blog */}
-            <div>
-              <h3 className="font-semibold text-base mb-2">Blog</h3>
-              <p className="mb-1">Welcome To National Skirting!</p>
-              <p className="text-gray-400 text-xs mb-3">October 26, 2021</p>
-              <p className="text-white font-semibold">
-                Christmas Holiday Information
-              </p>
-              {/* Uncomment if needed
-              <Image
-                src="/britain-flag.svg"
-                alt="Proudly British"
-                width={128}
-                height={76}
-                className="mt-6 w-32"
-              /> */}
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <div className="flex justify-center mt-4">
+                  <Image
+                    src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745239686/paypal_pzannc.jpg"
+                    alt="Payment Methods"
+                    width={160}
+                    height={40}
+                  />
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="border-t border-gray-700 pt-4 text-xs text-gray-500 flex justify-between items-center">
-            <span>©2025 National Skirting</span>
-            <a href="#">Legal</a>
+        {/* Full-width border and copyright section */}
+        <div className="border-t border-gray-700 w-full mt-4">
+          <div className="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center text-sm text-gray-400">
+            <span>©2025 London Tiles</span>
+            <Link href="/terms-conditions" className="hover:text-gray-300">
+              Legal
+            </Link>
           </div>
         </div>
       </footer>

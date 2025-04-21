@@ -37,7 +37,7 @@ export default async function ArchitravePage() {
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[40vh] min-h-[400px] w-full">
+      <div className="relative h-[40vh] min-h-[360px] w-full">
         <Image
           src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745089911/skirting-king-home_se2guz.jpg"
           alt="Architrave"
