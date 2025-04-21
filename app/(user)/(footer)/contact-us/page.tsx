@@ -34,8 +34,8 @@ export default function ContactUs() {
           <div className="max-w-3xl">
             <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
             <p className="text-gray-300 text-lg">
-              Get in touch with us for any questions or inquiries. We're here to
-              help.
+              Get in touch with us for any questions or inquiries. We&apos;re
+              here to help.
             </p>
           </div>
         </div>
@@ -51,9 +51,9 @@ export default function ContactUs() {
                 Get in Touch
               </h2>
               <p className="text-gray-600">
-                Have a question or need assistance? We're here to help. Contact
-                us using the form or reach out directly through our contact
-                information below.
+                Have a question or need assistance? We&apos;re here to help.
+                Contact us using the form or reach out directly through our
+                contact information below.
               </p>
             </div>
 

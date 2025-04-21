@@ -29,7 +29,8 @@ export default function ReturnAndRefund() {
             </h2>
             <p className="mb-4">
               We want you to be completely satisfied with your purchase. If
-              you're not entirely happy with your order, we're here to help.
+              you&apos;re not entirely happy with your order, we&apos;re here to
+              help.
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Returns are accepted within 30 days of delivery</li>
