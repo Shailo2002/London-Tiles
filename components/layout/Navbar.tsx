@@ -49,7 +49,7 @@ export default function Navbar() {
       } flex justify-between items-center`}
     >
       {/* Center: Logo */}
-      <Link href="/" className="text-lg font-light tracking-widest uppercase">
+      <Link href="/" className="text-3xl font-serif tracking-wide uppercase">
         LONDON TILES
       </Link>
 
