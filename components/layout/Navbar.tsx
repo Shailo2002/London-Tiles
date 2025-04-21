@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ShoppingCart, Search } from "lucide-react";
+import { ShoppingCart, Search, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/CartContext";
 import { signOut } from "next-auth/react";
@@ -14,6 +14,7 @@ export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isHomePage = pathname === "/";
 
@@ -53,7 +54,19 @@ export default function Navbar() {
         LONDON TILES
       </Link>
 
-      {/* Right: Navigation Links */}
+      {/* Mobile Menu Button */}
+      <button
+        className="md:hidden"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      >
+        {mobileMenuOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
+      </button>
+
+      {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-8">
         <Search className="w-4 h-4 cursor-pointer" />
 
@@ -122,6 +135,77 @@ export default function Navbar() {
           </Link>
         )}
       </nav>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div
+          className={`absolute top-full left-0 w-full bg-white shadow-lg md:hidden text-black ${
+            isHomePage && !scrolled ? "mt-0" : "mt-0"
+          }`}
+        >
+          <nav className="flex flex-col p-4 space-y-4">
+            <div className="flex items-center gap-2 text-black hover:text-gray-600">
+              <Search className="w-4 h-4" />
+              <span className="text-sm font-light uppercase tracking-wider">
+                Search
+              </span>
+            </div>
+
+            <Link
+              href="/product"
+              className="text-sm font-light uppercase tracking-wider text-black hover:text-gray-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Products
+            </Link>
+
+            <Link
+              href="/cart"
+              className="flex items-center gap-2 text-black hover:text-gray-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span className="text-sm font-light uppercase tracking-wider">
+                Cart
+              </span>
+              {itemCount > 0 && (
+                <span className="bg-black text-white text-xs rounded-full px-1">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+
+            {loggedIn ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-light uppercase tracking-wider text-black hover:text-gray-600"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-light uppercase tracking-wider text-black hover:text-gray-600 text-left w-full"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-light uppercase tracking-wider text-black hover:text-gray-600"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
