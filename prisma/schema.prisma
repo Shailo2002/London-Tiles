@@ -43,8 +43,8 @@ model Products {
   Height          String[]
   Length          String[]
   Thickness       String[]
-  Finish          String[]
-  Rebate          String[]
+  Finish          String[] @default([])
+  Rebate          String[] @default([])
   priceIncVAT     Float
   priceExVAT      Float
   createdAt       DateTime @default(now())

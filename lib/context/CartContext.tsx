@@ -12,8 +12,6 @@ export type CartItem = {
     height?: string;
     length?: string;
     thickness?: string;
-    finish?: string;
-    rebate?: string;
   };
 };
 

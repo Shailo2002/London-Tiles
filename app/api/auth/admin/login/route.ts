@@ -12,9 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    const admin = await prisma.admin.findUnique({
-      where: { email },
-    });
+    const admin = await prisma.admin.findUnique({ where: { email } });
 
     if (!admin) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
@@ -30,30 +28,21 @@ export async function POST(req: NextRequest) {
     }
 
     const token = jwt.sign(
-      {
-        id: admin.id,
-        email: admin.email,
-        role: 'admin',
-      },
+      { id: admin.id, email: admin.email, role: 'admin' },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    // Set HttpOnly cookie
-    const response = NextResponse.json(
-      {
-        user: {
-          email: admin.email,
-          role: 'admin',
-        },
-      },
-      { status: 200 }
-    );
+    // Create the response first
+    const response = NextResponse.json({ success: true });
 
-    response.cookies.set('token', token, {
-      httpOnly: true,
+    // Set HttpOnly cookie with path=/admin
+    response.cookies.set({
+      name: 'admin-token',
+      value: token,
       path: '/',
-      sameSite: 'strict',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60, // 1 hour
     });
 

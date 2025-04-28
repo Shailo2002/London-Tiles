@@ -25,7 +25,8 @@ function PaymentSuccessContent() {
           if (data.success) {
             clearCart();
             setIsConfirmed(true);
-            router.replace("/thank-you");
+            router.replace(`/thank-you/${orderId}`);
+
           }
         } catch (error) {
           console.error("Confirmation failed:", error);
@@ -36,9 +37,30 @@ function PaymentSuccessContent() {
   }, [orderId, isConfirmed, clearCart, router]);
 
   return (
-    <div className="container mx-auto px-4 py-8 text-center">
-      <h1 className="text-2xl font-bold mb-4">Processing your payment...</h1>
-      <p>Please wait while we confirm your order.</p>
+    <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-[60vh]">
+      <div className="w-full max-w-md border-2 border-blue-300 rounded-2xl p-8 shadow-lg bg-white">
+        <div className="flex flex-col items-center text-center">
+          <img
+            src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+            alt="PayPal Logo"
+            className="w-20 h-20 mb-6 animate-pulse"
+          />
+          <h1 className="text-2xl font-semibold text-blue-700 mb-3">
+            Processing Payment via PayPal
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Please wait while we confirm your order. Do not refresh or close
+            this tab.
+          </p>
+
+          {/* Bouncing dots loader */}
+          <div className="flex space-x-2 mt-4">
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

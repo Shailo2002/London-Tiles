@@ -14,17 +14,17 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("/api/auth/admin/login", {
-        email,
-        password,
-      });
-      const { token } = res.data;
-
-      // Set token in cookie
-      document.cookie = `admin-token=${token}; path=/`;
-
-      alert("Login successful!");
-      router.push("/admin/dashboard");
+      const res = await axios.post(
+        "/api/auth/admin/login",
+        { email, password },
+        { withCredentials: true } // keep this for cookies to be sent properly
+      );
+      if (res.data.success) {
+        alert("Login successful!");
+        router.push("/admin/dashboard");
+      } else {
+        alert("Login failed. Please try again.");
+      }
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
       alert(error.response?.data?.error || "Login failed");

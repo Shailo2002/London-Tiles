@@ -1,6 +1,4 @@
-// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { authPages } from '@/lib/auth-config';
 
 export const config = {
   matcher: [
@@ -12,9 +10,11 @@ export const config = {
 
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
-  const token = req.cookies.get('token')?.value;
-  const sessionToken = req.cookies.get('next-auth.session-token')?.value;
+  const token = req.cookies.get('admin-token')?.value;
   const isAdminRoute = req.nextUrl.pathname.startsWith('/admin');
+
+  // For debugging
+
 
   // Skip auth for static files and API routes
   if (
@@ -25,15 +25,10 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 1. First check your custom token for /admin/dashboard
-  if (req.nextUrl.pathname.startsWith('/admin/dashboard') && !token) {
+  // Protect all /admin routes except login
+  if (isAdminRoute && !token && req.nextUrl.pathname !== '/admin/login') {
     url.pathname = '/admin/login';
     return NextResponse.redirect(url);
-  }
-
-  // 2. Then check NextAuth session for other admin routes
-  if (isAdminRoute && !sessionToken) {
-    return NextResponse.redirect(new URL(authPages.signIn, req.url));
   }
 
   return NextResponse.next();

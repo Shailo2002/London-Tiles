@@ -10,8 +10,6 @@ type CartItem = {
     height?: string;
     length?: string;
     thickness?: string;
-    finish?: string;
-    rebate?: string;
   };
 };
 
@@ -66,11 +64,11 @@ export async function POST(req: Request) {
           create: items.map((item: CartItem) => ({
             quantity: item.quantity,
             price: item.price,
-            height: item.options?.height,
-            length: item.options?.length,
-            thickness: item.options?.thickness,
-            finish: item.options?.finish,
-            rebate: item.options?.rebate,
+            height: item.options?.height || '',
+            length: item.options?.length || '',
+            thickness: item.options?.thickness || '',
+            finish: '',
+            rebate: '',
           })),
         },
       },
@@ -89,8 +87,8 @@ export async function POST(req: Request) {
         custom_id: order.id,
       }],
       application_context: {
-        return_url: `http://localhost:3000/payment-success?orderId=${order.id}`,
-        cancel_url: `http://localhost:3000/payment-cancelled?orderId=${order.id}`
+        return_url: `https://skirting.vercel.app/payment-success?orderId=${order.id}`,
+        cancel_url: `https://skirting.vercel.app/payment-cancelled?orderId=${order.id}`
       },
     });
 
