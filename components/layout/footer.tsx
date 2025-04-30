@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,14 +10,13 @@ const Footer = () => {
         <Image
           src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745084638/R_g1keju.jpg"
           alt="Featured Project"
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
+          layout="fill"
+          objectFit="cover"
         />
       </div>
+
       {/* Footer Text Section */}
-      <footer className="bg-[#1A1818] text-white px-6 pt-12 pb-6">
+      <footer className="bg-[#1A1818] dark:bg-gray-900 text-white px-6 pt-12 pb-6">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
           <div className="flex flex-col md:flex-row justify-center gap-16 md:gap-28 mb-12">
             {/* Contact Info */}
@@ -34,6 +34,7 @@ const Footer = () => {
                 <p>londontiles7@gmail.com</p>
               </div>
             </div>
+
             {/* Help */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Help</h3>
@@ -70,6 +71,7 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
             {/* Legal */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Legal</h3>
@@ -97,8 +99,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Full-width border and copyright section */}
-        <div className="border-t border-gray-700 w-full mt-4">
+        {/* Footer bottom */}
+        <div className="border-t border-gray-700 dark:border-gray-800 w-full mt-4">
           <div className="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center text-sm text-gray-400">
             <span>©2025 London Tiles</span>
             <Link href="/terms-conditions" className="hover:text-gray-300">

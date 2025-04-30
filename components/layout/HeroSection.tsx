@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 
 export default function HeroSection() {
@@ -18,7 +17,7 @@ export default function HeroSection() {
 
       {/* Overlay content */}
       <div className="absolute inset-0 bg-black/30 flex items-end md:items-center justify-center md:justify-start px-6 md:px-24 pb-10 md:pb-0">
-        <div className="text-white max-w-lg">
+        <div className="text-white max-w-lg animate-fade-in">
           <h2 className="text-4xl md:text-6xl font-light mb-2">
             Quality Craft
           </h2>
