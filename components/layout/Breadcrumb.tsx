@@ -25,25 +25,28 @@ export default function Breadcrumb({ productName, category }: BreadcrumbProps) {
 
   return (
     <nav className="flex items-center space-x-2 text-sm text-gray-600">
-      <Link href="/" className="hover:text-black transition-colors">
+      <Link
+        href="/"
+        className="hover:text-black transition-colors dark:text-gray-300"
+      >
         Home
       </Link>
 
-      <ChevronRight className="w-4 h-4" />
+      <ChevronRight className="w-4 h-4 dark:text-gray-300" />
 
       {(isProductPage || isCategoryPage) && (
         <>
           <Link
             href={`/product-category/${categoryName.toLowerCase()}`}
-            className="hover:text-black transition-colors"
+            className="hover:text-black transition-colors dark:text-gray-300"
           >
             {categoryName}
           </Link>
 
           {isProductPage && (
             <>
-              <ChevronRight className="w-4 h-4" />
-              <span className="text-black">{productName}</span>
+              <ChevronRight className="w-4 h-4 dark:text-gray-300" />
+              <span className="text-black dark:text-gray-300">{productName}</span>
             </>
           )}
         </>

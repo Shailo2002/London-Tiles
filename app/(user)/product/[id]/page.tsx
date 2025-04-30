@@ -16,7 +16,7 @@ export default async function ProductPage(props: {
   const productData = await getProductById(id);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-6 md:px-12 py-8">
         <Breadcrumb
           productName={productData.name}

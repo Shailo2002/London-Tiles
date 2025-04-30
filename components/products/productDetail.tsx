@@ -71,17 +71,19 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
-        {/* Product Description at Top */}
-        <div className="mb-8 bg-gray-50 p-4 rounded-lg shadow-sm">
-          <p className="text-gray-600 max-w-3xl">{product.description}</p>
+        {/* Product Description */}
+        <div className="mb-8 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+          <p className="text-gray-600 dark:text-gray-300 max-w-3xl">
+            {product.description}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Product Image and Discounts */}
+          {/* Left Column */}
           <div className="space-y-6">
-            {/* Product Image */}
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="relative h-96 w-full bg-gray-100 rounded-lg overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+              {/* Image Display */}
+              <div className="relative h-96 w-full bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
                 <Image
                   src={
                     product.image[selectedImageIndex] ||
@@ -94,7 +96,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                 />
               </div>
 
-              {/* Thumbnail Gallery */}
+              {/* Thumbnails */}
               {product.image.length > 1 && (
                 <div className="flex space-x-2 overflow-x-auto mt-4">
                   {product.image.map((img, index) => (
@@ -119,15 +121,14 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
               )}
             </div>
 
-            {/* Discounts Section */}
+            {/* Discounts */}
             <div className="grid grid-cols-1 gap-4">
-              {/* Quantity Discount Table */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <h2 className="text-lg font-medium mb-4 pb-2 border-b">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h2 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-700 dark:text-white">
                   Quantity Discounts
                 </h2>
-                <table className="w-full">
-                  <thead className="bg-gray-50">
+                <table className="w-full text-gray-700 dark:text-gray-300">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
                       <th className="py-2 px-4 text-left">Quantity</th>
                       <th className="py-2 px-4 text-left">Discount</th>
@@ -136,7 +137,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                   </thead>
                   <tbody>
                     {quantityDiscounts.map((discount, index) => (
-                      <tr key={index} className="border-b last:border-b-0">
+                      <tr key={index} className="border-b dark:border-gray-700">
                         <td className="py-2 px-4">{discount.quantity}</td>
                         <td className="py-2 px-4">{discount.discount}</td>
                         <td className="py-2 px-4">{discount.price}</td>
@@ -146,26 +147,26 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                 </table>
               </div>
 
-              {/* Bulk Discount Display */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <h2 className="text-lg font-medium mb-4 pb-2 border-b">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h2 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-700 dark:text-white">
                   Bulk Discount
                 </h2>
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <div className="text-xl font-bold">10+</div>
-                    <div className="text-blue-600 font-medium">-1%</div>
-                  </div>
-                  <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <div className="text-xl font-bold">25+</div>
-                    <div className="text-blue-600 font-medium">-3%</div>
-                  </div>
-                  <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <div className="text-xl font-bold">50+</div>
-                    <div className="text-blue-600 font-medium">-5%</div>
-                  </div>
+                  {["-1%", "-3%", "-5%"].map((discount, i) => (
+                    <div
+                      key={i}
+                      className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg text-center"
+                    >
+                      <div className="text-xl font-bold text-gray-800 dark:text-white">
+                        {quantityDiscounts[i].quantity}
+                      </div>
+                      <div className="text-blue-600 dark:text-blue-400 font-medium">
+                        {discount}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-sm text-gray-500 mt-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
                   Discount calculated and applied automatically when added to
                   basket
                 </p>
@@ -173,102 +174,73 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             </div>
           </div>
 
-          {/* Right Column - Product Options */}
-          <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
-            <h1 className="text-3xl font-light tracking-wide text-gray-900 mb-4 border-b pb-4">
+          {/* Right Column - Options */}
+          <div className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <h1 className="text-3xl font-light tracking-wide text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-4">
               {product.name}
             </h1>
 
-            {/* Product Specifications */}
-            {/* Height */}
-            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
-              <span className="font-medium">Height</span>
-              <select
-                className="select select-bordered w-48"
-                value={selectedOptions.height}
-                onChange={(e) =>
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    height: e.target.value,
-                  })
-                }
-              >
-                <option value="">Choose Height</option>
-                {heightOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Selectors */}
+            {["Height", "Length", "Thickness"].map((label, i) => {
+              const key = label.toLowerCase() as
+                | "height"
+                | "length"
+                | "thickness";
+              const options = product[
+                label as keyof typeof product
+              ] as string[];
+              return (
+                <div
+                  key={label}
+                  className="flex justify-between items-center border-b pb-4 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors"
+                >
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {label}
+                  </span>
+                  <select
+                    className="select select-bordered w-48 p-2  dark:bg-gray-700 dark:text-white"
+                    value={selectedOptions[key]}
+                    onChange={(e) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        [key]: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Choose {label}</option>
+                    {options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
 
-            {/* Length Selector */}
-            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
-              <span className="font-medium">Length</span>
-              <select
-                className="select select-bordered w-48"
-                value={selectedOptions.length}
-                onChange={(e) =>
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    length: e.target.value,
-                  })
-                }
-              >
-                <option value="">Choose Length</option>
-                {lengthOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Thickness Selector */}
-            <div className="flex justify-between items-center border-b pb-4 hover:bg-gray-50 p-2 rounded transition-colors">
-              <span className="font-medium">Thickness</span>
-              <select
-                className="select select-bordered w-48"
-                value={selectedOptions.thickness}
-                onChange={(e) =>
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    thickness: e.target.value,
-                  })
-                }
-              >
-                <option value="">Choose Thickness</option>
-                {thicknessOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Pricing Section */}
-            <div className="bg-gray-50 p-6 rounded-lg mt-6 shadow-sm">
+            {/* Price and Cart */}
+            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg mt-6 shadow-sm">
               <div className="flex flex-col mb-6">
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   £{product.priceIncVAT.toFixed(2)}{" "}
                   <span className="text-lg font-normal">(inc VAT)</span>
                 </span>
-                <span className="text-lg text-gray-600 mt-1">
+                <span className="text-lg text-gray-600 dark:text-gray-300 mt-1">
                   £{product.priceExVAT.toFixed(2)} (ex VAT)
                 </span>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 bg-white p-1 rounded-lg shadow-sm">
+                <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg shadow-sm">
                   <button
-                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors"
+                    className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   >
                     -
                   </button>
                   <input
                     type="number"
-                    className="w-16 text-center border-none focus:ring-0 bg-transparent"
+                    className="w-16 text-center border-none bg-transparent dark:text-white"
                     value={quantity}
                     min="1"
                     onChange={(e) =>
@@ -276,7 +248,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                     }
                   />
                   <button
-                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors"
+                    className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                     onClick={() => setQuantity(quantity + 1)}
                   >
                     +
@@ -291,8 +263,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
               </div>
             </div>
 
-            {/* SKU Display */}
-            <div className="mt-4 text-sm text-gray-500 border-t pt-4">
+            <div className="mt-4 text-sm text-gray-500 dark:text-gray-400 border-t dark:border-gray-700 pt-4">
               SKU: {product.id}
             </div>
           </div>

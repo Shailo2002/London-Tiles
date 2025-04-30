@@ -13,8 +13,36 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const itemCount = 0;
+const [itemCount, setItemCount] = useState(0);
   const isHomePage = pathname === "/";
+
+  useEffect(() => {
+    const updateState = () => {
+      setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+
+      const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+      const totalCount = cartItems.reduce(
+        (acc: number, item: { quantity: number }) => acc + item.quantity,
+        0
+      );
+      setItemCount(totalCount);
+    };
+
+    updateState();
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("storage", updateState); // in case storage changes from other tabs
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("storage", updateState);
+    };
+  }, []);
+
 
   useEffect(() => {
     setLoggedIn(localStorage.getItem("isLoggedIn") === "true");

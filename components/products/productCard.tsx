@@ -18,7 +18,7 @@ const ProductCard = ({
   priceExVAT,
 }: ProductCardProps) => {
   return (
-    <div className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-lg h-full">
+    <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-full">
       <div className="relative h-64 w-full overflow-hidden">
         <Image
           src={image[0] || "/upload/skirting_small.jpg"}
@@ -31,22 +31,26 @@ const ProductCard = ({
       </div>
 
       <div className="p-6 flex flex-col mb-2 h-[200px]">
-        <h3 className="text-lg font-light mb-3 min-h-[56px]">{name}</h3>
+        <h3 className="text-lg font-light mb-3 min-h-[56px] dark:text-white">
+          {name}
+        </h3>
 
         <div className="space-y-1 mb-3">
-          <p className="text-gray-800">
-            £{priceIncVAT.toFixed(2)}{" "}
-            <span className="text-gray-500 text-sm">(inc VAT)</span>
+          <p className="text-gray-800 dark:text-gray-200">
+            £{priceExVAT.toFixed(2)}{" "}
+            <span className="text-gray-500 dark:text-gray-400 text-sm">
+              (ex VAT)
+            </span>
           </p>
-          <p className="text-gray-500 text-sm">
-            £{priceExVAT.toFixed(2)} (ex VAT)
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            £{priceIncVAT.toFixed(2)} (inc VAT)
           </p>
         </div>
 
         <Link href={`/product/${id}`} className="mt-auto">
           <button
-            className="w-full border border-black text-black py-2 px-4 mb-8
-                    hover:bg-black hover:text-white transition-colors duration-200"
+            className="w-full border border-black dark:border-white text-black dark:text-white py-2 px-4 mb-8
+              hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-200"
           >
             Select Options
           </button>
