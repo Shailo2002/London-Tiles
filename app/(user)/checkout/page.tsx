@@ -17,6 +17,8 @@ interface AddressFormData {
 }
 
 export default function CheckoutPage() {
+      const [loading, setLoading] = useState(false);
+
   const { items, total, subtotal, vat } = useCart();
   const [differentShippingAddress, setDifferentShippingAddress] =
     useState(false);
@@ -53,6 +55,7 @@ export default function CheckoutPage() {
       "email",
     ];
 
+
     for (const field of requiredFields) {
       if (!address[field as keyof AddressFormData]?.trim()) {
         alert(`${type} field "${field}" is required.`);
@@ -68,6 +71,8 @@ export default function CheckoutPage() {
       !differentShippingAddress || validateAddress(shippingAddress, "Shipping");
 
     if (!isBillingValid || !isShippingValid) return;
+
+    setLoading(true); // Start loading
 
     try {
       const response = await fetch("/api/create-order", {
@@ -91,11 +96,15 @@ export default function CheckoutPage() {
       const data = await response.json();
       if (data.success) {
         window.location.href = data.paypalUrl;
+      } else {
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error creating order:", error);
+      setLoading(false);
     }
   };
+
   return (
     <div className="w-full min-h-screen pt-20 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Dark mode toggle */}
@@ -197,12 +206,38 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            <button
-              onClick={handleProceedToPayment}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors font-medium"
-            >
-              Proceed to Payment
-            </button>
+            {loading ? (
+              <div className="w-full flex items-center justify-center py-4">
+                <svg
+                  className="animate-spin h-6 w-6 text-blue-600 dark:text-blue-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  ></path>
+                </svg>
+                <span className="ml-2">Redirecting to PayPal...</span>
+              </div>
+            ) : (
+              <button
+                onClick={handleProceedToPayment}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors font-medium"
+              >
+                Proceed to Payment
+              </button>
+            )}
           </div>
         </div>
       </div>

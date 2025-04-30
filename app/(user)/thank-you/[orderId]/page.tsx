@@ -42,8 +42,8 @@ export default function ThankYouPage() {
   const params = useParams();
   const orderId = params.orderId as string;
   const [order, setOrder] = useState<Order | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Loader for fetching order details
-  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false); // Loader for generating invoice
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
 
   useEffect(() => {
     if (!orderId) return;
@@ -78,22 +78,17 @@ export default function ThankYouPage() {
       format: "a4",
     });
 
-    // Setting up PDF styles and content (as in your original code)
-
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating PDF generation delay
-
-    // Complete PDF generation process (your code remains the same)
-
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     doc.save(`invoice-${order.id}.pdf`);
 
-    setIsGeneratingInvoice(false); // Stop loader
+    setIsGeneratingInvoice(false);
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen relative">
+      <div className="flex justify-center items-center min-h-screen relative bg-white dark:bg-zinc-900 transition-colors duration-300">
         <div className="absolute top-1/3 flex flex-col items-center">
-          <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
           <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Loading your order...
           </p>
@@ -104,20 +99,20 @@ export default function ThankYouPage() {
 
   if (!order) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Order not found.</p>
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-zinc-900 transition-colors duration-300">
+        <p className="text-red-500 dark:text-red-400">Order not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-2xl">
-      <div className="border rounded-xl p-6 shadow-md bg-white">
-        <h1 className="text-2xl font-bold mb-4 text-green-700">
+    <div className="container mx-auto px-4 py-10 max-w-2xl bg-white dark:bg-zinc-900 transition-colors duration-300">
+      <div className="border rounded-xl p-6 shadow-md bg-white dark:bg-zinc-800 dark:border-zinc-700 transition-colors duration-300">
+        <h1 className="text-2xl font-bold mb-4 text-green-700 dark:text-green-400">
           Thank you for your purchase!
         </h1>
 
-        <div className="mb-4 space-y-2">
+        <div className="mb-4 space-y-2 text-gray-800 dark:text-gray-300">
           <p>
             <span className="font-semibold">Order ID:</span> {order.id}
           </p>
@@ -132,10 +127,15 @@ export default function ThankYouPage() {
         </div>
 
         <div className="mb-6">
-          <h2 className="font-semibold mb-2">Items:</h2>
+          <h2 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+            Items:
+          </h2>
           <ul className="space-y-4">
             {order.items.map((item) => (
-              <li key={item.id} className="border-b pb-4">
+              <li
+                key={item.id}
+                className="border-b pb-4 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-300"
+              >
                 <div className="flex justify-between">
                   <div>
                     <p className="font-medium">Specifications:</p>
@@ -156,7 +156,7 @@ export default function ThankYouPage() {
           </ul>
         </div>
 
-        <div className="space-y-2 border-t pt-4">
+        <div className="space-y-2 border-t pt-4 border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-300">
           <div className="flex justify-between">
             <span>Subtotal:</span>
             <span>£{order.subtotal.toFixed(2)}</span>

@@ -2,7 +2,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-// This component will use the search params after suspense
 function CancelledContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -34,30 +33,49 @@ function CancelledContent() {
   }, [orderId, isProcessed]);
 
   return (
-    <div className="container mx-auto px-4 py-8 text-center">
-      <h1 className="text-2xl font-bold mb-4">
-        {error ? "Error" : "Payment Cancelled"}
-      </h1>
-      {error ? (
-        <p className="text-red-600">{error}</p>
-      ) : (
-        <p>
-          {isProcessed
-            ? "Your payment was cancelled successfully. Please try again if you wish to complete your purchase."
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16 mx-auto mb-4 text-red-600 dark:text-red-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12A9 9 0 103 12a9 9 0 0018 0z"
+          />
+        </svg>
+        <h1 className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-100">
+          {error ? "Error" : "Payment Cancelled"}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">
+          {error
+            ? error
+            : isProcessed
+            ? "Your payment has been cancelled. You can retry if you'd like to complete your purchase."
             : "Processing cancellation..."}
         </p>
-      )}
+        <a
+          href="/"
+          className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Return to Home
+        </a>
+      </div>
     </div>
   );
 }
 
-// Main page component
 export default function PaymentCancelledPage() {
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto px-4 py-8 text-center">
-          Loading...
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
+          <div className="text-gray-700 dark:text-gray-300">Loading...</div>
         </div>
       }
     >

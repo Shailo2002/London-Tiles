@@ -2,68 +2,43 @@
 import { useEffect, useState } from "react";
 import { ShoppingCart, Search, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useCart } from "@/lib/context/CartContext";
+import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "../theme/ThemeToggle";
 
 export default function Navbar() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
+ const { items } = useCart();
+ const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+ const pathname = usePathname();
 
-const [itemCount, setItemCount] = useState(0);
-  const isHomePage = pathname === "/";
+ const [loggedIn, setLoggedIn] = useState(false);
+ const [dropdownOpen, setDropdownOpen] = useState(false);
+ const [scrolled, setScrolled] = useState(false);
+ const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const updateState = () => {
-      setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+ const isHomePage = pathname === "/";
 
-      const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-      const totalCount = cartItems.reduce(
-        (acc: number, item: { quantity: number }) => acc + item.quantity,
-        0
-      );
-      setItemCount(totalCount);
-    };
+ useEffect(() => {
+   setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
 
-    updateState();
+   const handleScroll = () => {
+     if (window.scrollY > 50) {
+       setScrolled(true);
+     } else {
+       setScrolled(false);
+     }
+   };
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+   window.addEventListener("scroll", handleScroll);
+   return () => window.removeEventListener("scroll", handleScroll);
+ }, []);
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("storage", updateState); // in case storage changes from other tabs
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("storage", updateState);
-    };
-  }, []);
-
-
-  useEffect(() => {
-    setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    router.push("/login");
-  };
-
+   const handleLogout = () => {
+     localStorage.removeItem("isLoggedIn");
+     signOut({ redirect: false });
+     window.location.href = "/login";
+   };
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300 ${
