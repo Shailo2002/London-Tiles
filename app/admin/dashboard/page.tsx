@@ -9,13 +9,15 @@ export default function AdminDashboard() {
     name: "",
     description: "",
     productCategory: "",
-    Height: "",
-    Length: "",
-    Thickness: "",
-    Finish: "",
-    Rebate: "",
-    priceIncVAT: "",
-    priceExVAT: "",
+    variants: [
+      {
+        height: "",
+        length: "",
+        thickness: "",
+        priceIncVAT: "",
+        priceExVAT: "",
+      },
+    ],
   });
 
   const [images, setImages] = useState<File[]>([]);
@@ -25,6 +27,32 @@ export default function AdminDashboard() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleVariantChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const updatedVariants = [...form.variants];
+    const key = e.target.name as keyof (typeof updatedVariants)[0];
+    updatedVariants[index][key] = e.target.value;
+    setForm({ ...form, variants: updatedVariants });
+  };
+
+  const addVariant = () => {
+    setForm({
+      ...form,
+      variants: [
+        ...form.variants,
+        {
+          height: "",
+          length: "",
+          thickness: "",
+          priceIncVAT: "",
+          priceExVAT: "",
+        },
+      ],
+    });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,18 +69,10 @@ export default function AdminDashboard() {
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("productCategory", form.productCategory);
-
-    // Convert comma-separated strings to arrays
-    formData.append("Height", JSON.stringify(form.Height.split(",")));
-    formData.append("Length", JSON.stringify(form.Length.split(",")));
-    formData.append("Thickness", JSON.stringify(form.Thickness.split(",")));
-    formData.append("Finish", JSON.stringify(form.Finish.split(",")));
-    formData.append("Rebate", JSON.stringify(form.Rebate.split(",")));
-    formData.append("priceIncVAT", form.priceIncVAT);
-    formData.append("priceExVAT", form.priceExVAT);
+    formData.append("variants", JSON.stringify(form.variants));
 
     images.forEach((img) => {
-      formData.append("image", img);
+      formData.append("images", img); // Changed from "image" to "images" for consistency
     });
 
     try {
@@ -61,11 +81,27 @@ export default function AdminDashboard() {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert("Product added!");
+      alert("Product added successfully!");
       setIsOpen(false);
+      // Reset form
+      setForm({
+        name: "",
+        description: "",
+        productCategory: "",
+        variants: [
+          {
+            height: "",
+            length: "",
+            thickness: "",
+            priceIncVAT: "",
+            priceExVAT: "",
+          },
+        ],
+      });
+      setImages([]);
     } catch (err) {
       const error = err as AxiosError;
-      console.log("error", error);
+      console.error("Error:", error);
       if (error.response?.status === 409) {
         alert("Product with this name already exists!");
       } else {
@@ -90,14 +126,14 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded shadow-md max-w-md w-full space-y-4"
+            className="bg-white p-6 rounded shadow-md max-w-md w-full space-y-4 overflow-y-auto max-h-screen"
           >
             <h2 className="text-xl font-bold">Add Product</h2>
 
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Product Name"
               value={form.name}
               onChange={handleChange}
               className="w-full border px-3 py-2 rounded"
@@ -111,104 +147,104 @@ export default function AdminDashboard() {
               onChange={handleChange}
               className="w-full border px-3 py-2 rounded"
               required
+              rows={3}
             />
 
             <input
               type="text"
               name="productCategory"
-              placeholder="Category"
+              placeholder="Category (e.g., skirting)"
               value={form.productCategory}
               onChange={handleChange}
               className="w-full border px-3 py-2 rounded"
               required
             />
 
-            <input
-              type="text"
-              name="Height"
-              placeholder="Height (comma separated)"
-              value={form.Height}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-            />
+            <div>
+              <h3 className="font-semibold">Variants</h3>
+              {form.variants.map((variant, index) => (
+                <div key={index} className="border p-2 rounded mb-2">
+                  <input
+                    name="height"
+                    placeholder="Height (mm)"
+                    value={variant.height}
+                    onChange={(e) => handleVariantChange(e, index)}
+                    className="w-full border px-3 py-2 rounded mb-2"
+                    required
+                  />
+                  <input
+                    name="length"
+                    placeholder="Length (mm)"
+                    value={variant.length}
+                    onChange={(e) => handleVariantChange(e, index)}
+                    className="w-full border px-3 py-2 rounded mb-2"
+                    required
+                  />
+                  <input
+                    name="thickness"
+                    placeholder="Thickness (mm)"
+                    value={variant.thickness}
+                    onChange={(e) => handleVariantChange(e, index)}
+                    className="w-full border px-3 py-2 rounded mb-2"
+                    required
+                  />
+                  <input
+                    name="priceIncVAT"
+                    type="number"
+                    step="0.01"
+                    placeholder="Price inc VAT (£)"
+                    value={variant.priceIncVAT}
+                    onChange={(e) => handleVariantChange(e, index)}
+                    className="w-full border px-3 py-2 rounded mb-2"
+                    required
+                  />
+                  <input
+                    name="priceExVAT"
+                    type="number"
+                    step="0.01"
+                    placeholder="Price ex VAT (£)"
+                    value={variant.priceExVAT}
+                    onChange={(e) => handleVariantChange(e, index)}
+                    className="w-full border px-3 py-2 rounded"
+                    required
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addVariant}
+                className="text-blue-600 text-sm underline mt-2"
+              >
+                + Add another variant
+              </button>
+            </div>
 
-            <input
-              type="text"
-              name="Length"
-              placeholder="Length (comma separated)"
-              value={form.Length}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-            />
+            <div>
+              <label className="block mb-1">Product Images</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="w-full border p-2 rounded"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Upload at least one image (JPEG, PNG)
+              </p>
+            </div>
 
-            <input
-              type="text"
-              name="Thickness"
-              placeholder="Thickness (comma separated)"
-              value={form.Thickness}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-            />
-
-            <input
-              type="text"
-              name="Finish"
-              placeholder="Finish (comma separated)"
-              value={form.Finish}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-            />
-
-            <input
-              type="text"
-              name="Rebate"
-              placeholder="Rebate (comma separated)"
-              value={form.Rebate}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-            />
-            <input
-              type="number"
-              step="0.01"
-              name="priceIncVAT"
-              placeholder="Price (inc VAT)"
-              value={form.priceIncVAT}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-              required
-            />
-
-            <input
-              type="number"
-              step="0.01"
-              name="priceExVAT"
-              placeholder="Price (ex VAT)"
-              value={form.priceExVAT}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-              required
-            />
-
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="w-full"
-              required
-            />
-
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 pt-4">
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 border rounded hover:bg-gray-100"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-black text-white px-4 py-2 rounded"
+                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? "Adding..." : "Add Product"}

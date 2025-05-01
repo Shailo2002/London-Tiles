@@ -11,12 +11,25 @@ async function getAllProducts() {
       select: {
         id: true,
         name: true,
-        image: true,
-        priceIncVAT: true,
-        priceExVAT: true,
+        images: true,
+        variants: {
+          select: {
+            priceIncVAT: true,
+            priceExVAT: true,
+          },
+          take: 1, // Only get the first variant
+        },
       },
     });
-    return products;
+
+    // Flatten variant prices to the root product object
+    return products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      image: product.images, // Use first image if exists
+      priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
+      priceExVAT: product.variants[0]?.priceExVAT ?? 0,
+    }));
   } catch (error) {
     console.error("Failed to fetch products:", error);
     return [];
@@ -55,28 +68,25 @@ export default async function ProductPage() {
       </div>
 
       {/* Category Navigation */}
-      <div className="">
-        <div className="container mx-auto px-6 md:px-12 py-6">
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/product-category/skirting"
-              className="px-5 py-2 mr-4 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-400 dark:focus:ring-gray-500"
-            >
-              Skirting
-            </Link>
-            <Link
-              href="/product-category/architrave"
-              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-400 dark:focus:ring-gray-500"
-            >
-              Architrave
-            </Link>
-          </div>
+      <div className="container mx-auto px-6 md:px-12 py-6">
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link
+            href="/product-category/skirting"
+            className="px-5 py-2 mr-4 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-400 dark:focus:ring-gray-500"
+          >
+            Skirting
+          </Link>
+          <Link
+            href="/product-category/architrave"
+            className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-400 dark:focus:ring-gray-500"
+          >
+            Architrave
+          </Link>
         </div>
       </div>
 
       {/* Products Section */}
       <div className="container mx-auto px-6 md:px-12 py-16">
-        {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.length > 0 ? (
             products.map((product) => (

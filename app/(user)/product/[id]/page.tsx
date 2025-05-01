@@ -14,15 +14,19 @@ export default async function ProductPage(props: {
 }) {
   const { id } = await props.params;
   const productData = await getProductById(id);
+  // Ensure required fields are not null
+  const product = {
+    ...productData,
+    description: productData.description || "",
+    category: productData.category || "",
+  };
+
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-6 md:px-12 py-8">
-        <Breadcrumb
-          productName={productData.name}
-          category={productData.productCategory}
-        />
-        <ProductDetail product={productData} />
+        <Breadcrumb productName={product.name} category={product.category} />
+        <ProductDetail product={product} />
       </div>
     </div>
   );
@@ -32,6 +36,9 @@ async function getProductById(productId: string) {
   try {
     const product = await prisma.products.findUnique({
       where: { id: productId },
+      include: {
+        variants: true,
+      },
     });
 
     if (!product) {

@@ -1,4 +1,3 @@
-// app/product-category/architrave/page.tsx
 import ProductCard from "@/components/products/productCard";
 import { PrismaClient } from "@prisma/client";
 import Image from "next/image";
@@ -14,17 +13,27 @@ async function getArchitraveProducts() {
   try {
     const products = await prisma.products.findMany({
       where: {
-        productCategory: "architrave",
+        category: "architrave",
       },
       select: {
         id: true,
         name: true,
-        image: true,
-        priceIncVAT: true,
-        priceExVAT: true,
+        images: true,
+        variants: {
+          select: {
+            priceIncVAT: true,
+            priceExVAT: true,
+          },
+          take: 1, // first variant only
+        },
       },
     });
-    return products;
+
+    return products.map((product) => ({
+      ...product,
+      priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
+      priceExVAT: product.variants[0]?.priceExVAT ?? 0,
+    }));
   } catch (error) {
     console.error("Failed to fetch architrave products:", error);
     return [];
@@ -69,7 +78,7 @@ export default async function ArchitravePage() {
                 key={product.id}
                 id={product.id}
                 name={product.name}
-                image={product.image}
+                image={product.images}
                 priceIncVAT={product.priceIncVAT}
                 priceExVAT={product.priceExVAT}
               />

@@ -1,5 +1,3 @@
-// app/product-category/skirting/page.tsx
-
 import ProductCard from "@/components/products/productCard";
 import { PrismaClient } from "@prisma/client";
 import Image from "next/image";
@@ -15,17 +13,28 @@ async function getSkirtingProducts() {
   try {
     const products = await prisma.products.findMany({
       where: {
-        productCategory: "skirting",
+        category: "skirting",
       },
       select: {
         id: true,
         name: true,
-        image: true,
-        priceIncVAT: true,
-        priceExVAT: true,
+        images: true,
+        variants: {
+          select: {
+            priceIncVAT: true,
+            priceExVAT: true,
+          },
+          take: 1, // Take first variant (you can change logic if needed)
+        },
       },
     });
-    return products;
+
+    // Flatten variant pricing into product
+    return products.map((product) => ({
+      ...product,
+      priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
+      priceExVAT: product.variants[0]?.priceExVAT ?? 0,
+    }));
   } catch (error) {
     console.error("Failed to fetch skirting products:", error);
     return [];
@@ -70,7 +79,7 @@ export default async function SkirtingPage() {
                 key={product.id}
                 id={product.id}
                 name={product.name}
-                image={product.image}
+                image={product.images}
                 priceIncVAT={product.priceIncVAT}
                 priceExVAT={product.priceExVAT}
               />

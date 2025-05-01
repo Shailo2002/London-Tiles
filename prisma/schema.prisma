@@ -35,21 +35,40 @@ model Admin {
 }
 
 model Products {
-  id              String   @id @default(uuid())
-  name            String   @unique
-  image           String[]
-  description     String
-  productCategory String
-  Height          String[]
-  Length          String[]
-  Thickness       String[]
-  Finish          String[] @default([])
-  Rebate          String[] @default([])
-  priceIncVAT     Float
-  priceExVAT      Float
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String           @id @default(uuid())
+  name           String
+  slug           String?           @unique
+  description    String?
+  category       String?
+  images         String[]         // Array of image URLs
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // Relations
+  variants       ProductVariant[]
 }
+
+model ProductVariant {
+  id            String    @id @default(uuid())
+  product       Products  @relation(fields: [productId], references: [id])
+  productId     String
+
+  height        String
+  length        String
+  thickness     String
+
+  priceIncVAT   Float
+  priceExVAT    Float
+
+  stock         Int       @default(0)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([productId, height, length, thickness]) // prevent duplicate variant
+}
+
+
 
 enum OrderStatus {
   pending

@@ -3,6 +3,8 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+
 
 interface OrderItem {
   id: string;
@@ -94,17 +96,18 @@ function DashboardContent() {
   };
 
   return (
-    <div className="w-full min-h-screen pt-20">
+    <div className="w-full min-h-screen pt-24 bg-white text-black dark:bg-gray-900 dark:text-white">
       <div className="container mx-auto px-6 md:px-12 py-12">
-        <h1 className="text-4xl md:text-5xl font-light mb-8">My Account</h1>
-
+        <div>
+          <h1 className="text-4xl md:text-5xl font-light mb-8">My Account</h1>
+        </div>
         <div className="mb-8">
-          <div className="flex border-b border-gray-200">
+          <div className="flex border-b border-gray-200 dark:border-gray-700">
             <button
               className={`py-4 px-6 font-light ${
                 activeTab === "orders"
-                  ? "border-b-2 border-black"
-                  : "text-gray-500"
+                  ? "border-b-2 border-black dark:border-white"
+                  : "text-gray-500 dark:text-gray-400"
               }`}
               onClick={() => setActiveTab("orders")}
             >
@@ -113,8 +116,8 @@ function DashboardContent() {
             <button
               className={`py-4 px-6 font-light ${
                 activeTab === "search"
-                  ? "border-b-2 border-black"
-                  : "text-gray-500"
+                  ? "border-b-2 border-black dark:border-white"
+                  : "text-gray-500 dark:text-gray-400"
               }`}
               onClick={() => setActiveTab("search")}
             >
@@ -127,23 +130,30 @@ function DashboardContent() {
           <div>
             {loading ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">Loading orders...</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Loading orders...
+                </p>
               </div>
             ) : orders.length > 0 ? (
               <div className="space-y-6">
                 {orders.map((order) => (
-                  <div key={order.id} className="border border-gray-100 p-6">
+                  <div
+                    key={order.id}
+                    className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800"
+                  >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-light">
+                        <h3 className="text-lg font-light text-black dark:text-white">
                           Order #{order.id}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">£{order.total.toFixed(2)}</p>
+                        <p className="font-medium text-black dark:text-white">
+                          £{order.total.toFixed(2)}
+                        </p>
                         <p
                           className={`text-sm ${getStatusClass(order.status)}`}
                         >
@@ -157,7 +167,7 @@ function DashboardContent() {
                       {order.items.map((item) => (
                         <div
                           key={item.id}
-                          className="flex justify-between text-sm"
+                          className="flex justify-between text-sm text-black dark:text-white"
                         >
                           <div>
                             <p>Quantity: {item.quantity}</p>
@@ -177,7 +187,9 @@ function DashboardContent() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500">No orders found.</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  No orders found.
+                </p>
               </div>
             )}
           </div>
@@ -192,11 +204,11 @@ function DashboardContent() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search for products..."
-                  className="flex-1 px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
+                  className="flex-1 px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-black dark:focus:border-white focus:ring-0 transition-colors"
                 />
                 <button
                   onClick={handleSearch}
-                  className="border border-black text-black px-6 py-3 hover:bg-black hover:text-white transition-colors"
+                  className="border border-black dark:border-white text-black dark:text-white px-6 py-3 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-colors"
                 >
                   Search
                 </button>
@@ -206,13 +218,18 @@ function DashboardContent() {
             {interestedItems.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {interestedItems.map((product) => (
-                  <div key={product.id} className="border border-gray-100 p-6">
-                    <h3 className="text-lg font-light mb-2">{product.name}</h3>
-                    <p className="font-medium mb-4">
+                  <div
+                    key={product.id}
+                    className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800"
+                  >
+                    <h3 className="text-lg font-light mb-2 text-black dark:text-white">
+                      {product.name}
+                    </h3>
+                    <p className="font-medium mb-4 text-black dark:text-white">
                       £{product.priceIncVAT.toFixed(2)}
                     </p>
                     <Link href={`/product/${product.id}`}>
-                      <button className="w-full border border-black text-black py-2 px-4 hover:bg-black hover:text-white transition-colors">
+                      <button className="w-full border border-black dark:border-white text-black dark:text-white py-2 px-4 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-colors">
                         View Product
                       </button>
                     </Link>
@@ -221,7 +238,7 @@ function DashboardContent() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   {searchQuery
                     ? "No products found matching your search."
                     : "Search for products to see results."}

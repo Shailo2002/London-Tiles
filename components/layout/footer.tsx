@@ -8,7 +8,7 @@ const Footer = () => {
       {/* Full Image Section */}
       <div className="w-full h-screen relative">
         <Image
-          src="https://res.cloudinary.com/dfapgsapr/image/upload/v1745084638/R_g1keju.jpg"
+          src="https://res.cloudinary.com/dfapgsapr/image/upload/v1746011445/Skirting-Profile-Closeup_LRes_lcxxgp.jpg"
           alt="Featured Project"
           layout="fill"
           objectFit="cover"

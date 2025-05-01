@@ -48,49 +48,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full min-h-screen pt-20">
-      <div className="container mx-auto px-6 md:px-12 py-12">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-4xl md:text-5xl font-light mb-6 text-center">
-            Login
-          </h1>
-          <p className="text-gray-600 mb-8 text-center">
-            Enter your email to receive a one-time password
-          </p>
+    <div className="w-full min-h-screen pt-20 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      {/* Dark mode toggle */}
+      <button
+        onClick={() => document.documentElement.classList.toggle("dark")}
+        className="absolute top-4 right-4 text-xs border px-3 py-1 rounded bg-white dark:bg-gray-800 dark:text-white"
+      >
+        Toggle Dark
+      </button>
 
-          {!otpSent ? (
-            <form onSubmit={handleSendOTP} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full border border-black text-black py-3 px-4 hover:bg-black hover:text-white transition-colors"
+      <div className="container mx-auto px-6 md:px-12 py-12">
+        <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+          <h1 className="text-3xl font-semibold mb-6 text-center">Login</h1>
+
+          {error && (
+            <div className="mb-4 text-sm text-red-600 dark:text-red-400">
+              {error}
+            </div>
+          )}
+
+          <form
+            onSubmit={otpSent ? handleSignIn : handleSendOTP}
+            className="space-y-6"
+          >
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm mb-1 text-gray-600 dark:text-gray-300"
               >
-                Send OTP
-              </button>
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-            </form>
-          ) : (
-            <form onSubmit={handleSignIn} className="space-y-6">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white focus:border-blue-600 focus:ring-0 transition-colors"
+              />
+            </div>
+
+            {otpSent && (
               <div>
                 <label
                   htmlFor="otp"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm mb-1 text-gray-600 dark:text-gray-300"
                 >
                   Enter OTP
                 </label>
@@ -99,20 +101,19 @@ export default function LoginPage() {
                   id="otp"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 focus:border-black focus:ring-0 transition-colors"
-                  placeholder="Enter 6-digit OTP"
                   required
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white focus:border-blue-600 focus:ring-0 transition-colors"
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full border border-black text-black py-3 px-4 hover:bg-black hover:text-white transition-colors"
-              >
-                Verify OTP
-              </button>
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-            </form>
-          )}
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 py-2 px-4 rounded-lg transition-colors font-medium"
+            >
+              {otpSent ? "Login" : "Send OTP"}
+            </button>
+          </form>
         </div>
       </div>
     </div>
