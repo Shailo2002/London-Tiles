@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import jsPDF from "jspdf";
-import { svg2pdf } from "svg2pdf.js";
 
 interface OrderItem {
   id: string;

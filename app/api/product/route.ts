@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         OR: [
           { name: { contains: query, mode: 'insensitive' } },
           { description: { contains: query, mode: 'insensitive' } },
-          { productCategory: { contains: query, mode: 'insensitive' } }
+          { category: { contains: query, mode: 'insensitive' } }
         ]
       },
       take: 5, // Limit to 5 results

@@ -116,16 +116,16 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     ),
   ];
 
-  const availableVariants = product.variants.filter((variant) => {
-    return (
-      (selectedDimensions.height === "" ||
-        variant.height === selectedDimensions.height) &&
-      (selectedDimensions.length === "" ||
-        variant.length === selectedDimensions.length) &&
-      (selectedDimensions.thickness === "" ||
-        variant.thickness === selectedDimensions.thickness)
-    );
-  });
+  // const availableVariants = product.variants.filter((variant) => {
+  //   return (
+  //     (selectedDimensions.height === "" ||
+  //       variant.height === selectedDimensions.height) &&
+  //     (selectedDimensions.length === "" ||
+  //       variant.length === selectedDimensions.length) &&
+  //     (selectedDimensions.thickness === "" ||
+  //       variant.thickness === selectedDimensions.thickness)
+  //   );
+  // });
 
   const handleDimensionChange = (
     dimension: "height" | "length" | "thickness",

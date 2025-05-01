@@ -1,15 +1,32 @@
 import ProductCard from "@/components/products/productCard";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 
-const prisma = new PrismaClient();
 
 export const metadata = {
   title: "Architrave Products | London-Tiles",
   description: "Browse our selection of high-quality architrave trim",
 };
 
-async function getArchitraveProducts() {
+type Product = {
+  id: string;
+  name: string;
+  images: string[];
+  variants: {
+    priceIncVAT: number;
+    priceExVAT: number;
+  }[];
+};
+
+type FlattenedProduct = {
+  id: string;
+  name: string;
+  images: string[];
+  priceIncVAT: number;
+  priceExVAT: number;
+};
+
+async function getArchitraveProducts(): Promise<FlattenedProduct[]> {
   try {
     const products = await prisma.products.findMany({
       where: {
@@ -24,12 +41,12 @@ async function getArchitraveProducts() {
             priceIncVAT: true,
             priceExVAT: true,
           },
-          take: 1, // first variant only
+          take: 1,
         },
       },
     });
 
-    return products.map((product) => ({
+    return products.map((product: Product) => ({
       ...product,
       priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
       priceExVAT: product.variants[0]?.priceExVAT ?? 0,

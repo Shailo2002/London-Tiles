@@ -5,7 +5,15 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-async function getAllProducts() {
+type ProductWithPrices = {
+  id: string;
+  name: string;
+  image: string[];
+  priceIncVAT: number;
+  priceExVAT: number;
+};
+
+async function getAllProducts(): Promise<ProductWithPrices[]> {
   try {
     const products = await prisma.products.findMany({
       select: {
@@ -17,16 +25,15 @@ async function getAllProducts() {
             priceIncVAT: true,
             priceExVAT: true,
           },
-          take: 1, // Only get the first variant
+          take: 1,
         },
       },
     });
 
-    // Flatten variant prices to the root product object
     return products.map((product) => ({
       id: product.id,
       name: product.name,
-      image: product.images, // Use first image if exists
+      image: product.images,
       priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
       priceExVAT: product.variants[0]?.priceExVAT ?? 0,
     }));

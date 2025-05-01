@@ -1,15 +1,31 @@
 import ProductCard from "@/components/products/productCard";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import Image from "next/image";
-
-const prisma = new PrismaClient();
 
 export const metadata = {
   title: "Skirting Products | London-Tiles",
   description: "Browse our selection of high-quality skirting boards",
 };
 
-async function getSkirtingProducts() {
+type Product = {
+  id: string;
+  name: string;
+  images: string[];
+  variants: {
+    priceIncVAT: number;
+    priceExVAT: number;
+  }[];
+};
+
+type FlattenedProduct = {
+  id: string;
+  name: string;
+  images: string[];
+  priceIncVAT: number;
+  priceExVAT: number;
+};
+
+async function getSkirtingProducts(): Promise<FlattenedProduct[]> {
   try {
     const products = await prisma.products.findMany({
       where: {
@@ -24,13 +40,12 @@ async function getSkirtingProducts() {
             priceIncVAT: true,
             priceExVAT: true,
           },
-          take: 1, // Take first variant (you can change logic if needed)
+          take: 1,
         },
       },
     });
 
-    // Flatten variant pricing into product
-    return products.map((product) => ({
+    return products.map((product: Product) => ({
       ...product,
       priceIncVAT: product.variants[0]?.priceIncVAT ?? 0,
       priceExVAT: product.variants[0]?.priceExVAT ?? 0,

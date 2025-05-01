@@ -1,4 +1,3 @@
-// app/api/orders/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
@@ -29,8 +28,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Map orders to a simpler format for the frontend
-    const formattedOrders = user.orders.map(order => ({
+    const formattedOrders = user.orders.map((order) => ({
       id: order.id,
       paypalOrderId: order.paypalOrderId,
       status: order.status,

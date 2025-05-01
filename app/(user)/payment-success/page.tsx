@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/lib/context/CartContext";
+import Image from "next/image";
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
@@ -39,10 +40,12 @@ function PaymentSuccessContent() {
     <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-[60vh]">
       <div className="w-full max-w-md border-2 border-blue-300 dark:border-blue-700 rounded-2xl p-8 shadow-lg bg-white dark:bg-zinc-900">
         <div className="flex flex-col items-center text-center">
-          <img
-            src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
-            alt="PayPal Logo"
-            className="w-20 h-20 mb-6 animate-pulse"
+          <Image
+            src="/success.png"
+            alt="success"
+            width={128}
+            height={128}
+            className="w-32 h-32"
           />
           <h1 className="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-3">
             Processing Payment via PayPal
