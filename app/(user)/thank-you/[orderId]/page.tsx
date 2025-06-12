@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import jsPDF from "jspdf";
 import { svg2pdf } from "svg2pdf.js";
 
+// Interfaces remain the same...
 interface OrderItem {
   id: string;
   name?: string;
@@ -69,6 +70,7 @@ export default function ThankYouPage() {
 
   const downloadInvoice = async () => {
     if (!order) return;
+    setIsGeneratingInvoice(true);
 
     const doc = new jsPDF({
       orientation: "portrait",
@@ -76,25 +78,44 @@ export default function ThankYouPage() {
       format: "a4",
     });
 
-    // Set colors based on the image (navy blue)
-    const primaryColor = [23, 55, 94];
-
-    // Background pattern (light)
+    const primaryColor: [number, number, number] = [23, 55, 94];
     doc.setFillColor(250, 250, 250);
     doc.rect(0, 0, 210, 297, "F");
 
-    // Create an SVG element for the wave
+    // Create SVG element
     const svgElement = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "svg"
     );
+    svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svgElement.setAttribute("width", "210");
+    svgElement.setAttribute("height", "50");
     svgElement.setAttribute("viewBox", "0 0 1200 150");
-    svgElement.innerHTML = `
-      <path fill="#173B5E" d="M0,0 L1200,0 L1200,50 C900,120 600,30 300,90 C150,120 50,90 0,70 Z"></path>
-      <path fill="white" d="M0,70 C50,90 150,120 300,90 C600,30 900,120 1200,50 L1200,150 L0,150 Z"></path>
-    `;
 
-    // Convert the SVG to PDF and add it to the document
+    const path1 = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    path1.setAttribute("fill", "#173B5E");
+    path1.setAttribute(
+      "d",
+      "M0,0 L1200,0 L1200,50 C900,120 600,30 300,90 C150,120 50,90 0,70 Z"
+    );
+
+    const path2 = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    path2.setAttribute("fill", "white");
+    path2.setAttribute(
+      "d",
+      "M0,70 C50,90 150,120 300,90 C600,30 900,120 1200,50 L1200,150 L0,150 Z"
+    );
+
+    svgElement.appendChild(path1);
+    svgElement.appendChild(path2);
+
+    // Render SVG
     await svg2pdf(svgElement, doc, {
       x: 0,
       y: 0,
@@ -102,25 +123,21 @@ export default function ThankYouPage() {
       height: 50,
     });
 
-    // Logo
+    // Now continue with your jsPDF rendering logic...
     doc.setFontSize(14);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.text("LONDON", 20, 20);
     doc.text("TILES", 20, 25);
 
-    // Invoice title
     doc.setFontSize(24);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.text("Invoice", 150, 25);
 
-    // Invoice to section
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
     doc.text("Invoice to", 20, 60);
 
-    // Customer details
     doc.setFontSize(14);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.text(
       `${order.billingAddress.firstName} ${order.billingAddress.lastName}`,
       20,
@@ -132,18 +149,16 @@ export default function ThankYouPage() {
     doc.text(order.billingAddress.city || "Building Name", 20, 79);
     doc.text(order.billingAddress.country || "Country", 20, 84);
 
-    // Invoice details (right side)
     doc.setFontSize(11);
     doc.setTextColor(100, 10, 100);
     doc.text("Invoice #", 100, 60);
     doc.text("Date", 100, 67);
-
     doc.setTextColor(0, 0, 0);
-    doc.text(order.id.toString() || "12345", 120, 60);
+    doc.text(order.id || "12345", 120, 60);
     doc.text(new Date().toLocaleDateString("en-GB"), 120, 67);
 
-    // Table header with blue background
-    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    // Table header
+    doc.setFillColor(...primaryColor);
     doc.rect(20, 95, 170, 10, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
@@ -153,14 +168,12 @@ export default function ThankYouPage() {
     doc.text("Qty.", 145, 101);
     doc.text("Total", 165, 101);
 
-    // Table content
     let y = 110;
     doc.setTextColor(0, 0, 0);
 
     order.items.forEach((item, index) => {
       doc.text((index + 1).toString(), 25, y);
 
-      // Item description (with dimensions)
       const description = item.name || "Tile Product";
       const dimensions = `${item.height}H × ${item.length}L × ${item.thickness}T`;
       const finish = `${item.finish}${item.rebate ? ` / ${item.rebate}` : ""}`;
@@ -171,38 +184,31 @@ export default function ThankYouPage() {
       doc.text(dimensions, 45, y + 5);
       doc.text(finish, 45, y + 10);
 
-      // Reset for next items
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
-
-      // Price, quantity and total
       doc.text(`£${item.price.toFixed(2)}`, 130, y);
       doc.text(item.quantity.toString(), 145, y);
       doc.text(`£${(item.quantity * item.price).toFixed(2)}`, 165, y);
 
-      // Separator line
       y += 15;
       doc.setDrawColor(220, 220, 220);
       doc.line(20, y, 190, y);
       y += 5;
     });
 
-    // Payment info
     y += 10;
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.setFontSize(12);
     doc.text("Payment info:", 20, y);
-
     y += 8;
+
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(10);
     doc.text("Account #", 20, y);
     doc.text("3256 2295 2020", 60, y);
-
     y += 6;
     doc.text("A/C Name", 20, y);
     doc.text("London Tiles Ltd", 60, y);
-
     y += 6;
     doc.text("Bank Details", 20, y);
     doc.text("Barclays Bank", 60, y);
@@ -213,25 +219,23 @@ export default function ThankYouPage() {
     doc.text("Tax:", 140, y - 6);
     doc.setLineWidth(0.5);
     doc.line(140, y + 2, 190, y + 2);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.setFontSize(12);
     doc.text("Total:", 140, y + 8);
 
-    // Total amounts
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     doc.text(`£${order.subtotal.toFixed(2)}`, 170, y - 12);
     doc.text(`${((order.vat / order.subtotal) * 100).toFixed(2)}%`, 170, y - 6);
     doc.setFontSize(12);
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.text(`£${order.total.toFixed(2)}`, 170, y + 8);
 
-    // Terms and conditions
+    // Terms
     y += 20;
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.setFontSize(11);
     doc.text("Terms & Conditions", 20, y);
-
     y += 6;
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(9);
@@ -241,23 +245,17 @@ export default function ThankYouPage() {
       y
     );
     doc.line(20, y + 5, 190, y + 5);
-
-    // Signature
-    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setTextColor(...primaryColor);
     doc.text("Authorised Sign", 160, y + 15);
 
-    // Footer with social icons placeholder
+    // Footer
     y = 270;
     doc.setFillColor(245, 245, 245);
     doc.roundedRect(20, y, 170, 15, 2, 2, "F");
 
-    // Social media icons placeholders
-    const iconStart = 80;
-    const iconSpacing = 10;
-
     for (let i = 0; i < 4; i++) {
       doc.setFillColor(100, 100, 100);
-      doc.circle(iconStart + i * iconSpacing, y + 7.5, 2.5, "F");
+      doc.circle(80 + i * 10, y + 7.5, 2.5, "F");
     }
 
     doc.setTextColor(100, 100, 100);
@@ -265,6 +263,7 @@ export default function ThankYouPage() {
     doc.text("www.londontiles.co.uk", 140, y + 8);
 
     doc.save(`invoice-${order.id}.pdf`);
+    setIsGeneratingInvoice(false);
   };
 
   if (isLoading) {

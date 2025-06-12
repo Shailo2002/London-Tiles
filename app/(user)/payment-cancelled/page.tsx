@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Link } from "lucide-react";
+import Link from "next/link";
+
 
 function CancelledContent() {
   const searchParams = useSearchParams();
