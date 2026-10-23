@@ -87,8 +87,8 @@ export async function POST(req: Request) {
         custom_id: order.id,
       }],
       application_context: {
-        return_url: `https://skirting.vercel.app/payment-success?orderId=${order.id}`,
-        cancel_url: `https://skirting.vercel.app/payment-cancelled?orderId=${order.id}`
+        return_url: `${process.env.NEXTAUTH_URL || new URL(req.url).origin}/payment-success?orderId=${order.id}`,
+        cancel_url: `${process.env.NEXTAUTH_URL || new URL(req.url).origin}/payment-cancelled?orderId=${order.id}`
       },
     });
 
